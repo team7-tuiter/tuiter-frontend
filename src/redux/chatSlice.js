@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import {
   apiGetSingleChat,
-  apiGetChatsById,
+  apiGetAllChatsById,
   apiDeleteSingleChat
 } from '../services/chat-service'
 
@@ -27,13 +27,13 @@ export const getSingleChat = createAsyncThunk(
     }
 })
 
-// getChatsById
-export const getChatsById = createAsyncThunk(
-  'chats/getChatsById', 
+// getAllChatsById
+export const getAllChatsById = createAsyncThunk(
+  'chats/getAllChatsById', 
   async (payload, { rejectWithValue }) => {
     const { id } = payload
     try {
-      const response = await apiGetChatsById(id)
+      const response = await apiGetAllChatsById(id)
       return response.data
     } catch(e) {
       if (!e.response) throw e
@@ -74,14 +74,14 @@ export const chatSlice = createSlice({
       state.error = action.error.message
     },
     // getChatsById
-    [getChatsById.pending] : (state, action) => {
+    [getAllChatsById.pending] : (state, action) => {
       state.status = 'loading'
     },
-    [getChatsById.fulfilled] : (state, action) => {
+    [getAllChatsById.fulfilled] : (state, action) => {
       state.status = 'succeded'
       state.chats = action.payload
     },
-    [getChatsById.rejected] : (state, action) => {
+    [getAllChatsById.rejected] : (state, action) => {
       state.status = 'failed'
       state.error = action.error.message
     },

@@ -8,7 +8,7 @@ export const apiGetSingleChat = () =>
   axios.get("http://localhost:4000/api/tuits")
   .then(response => response.data)
 
-export const apiGetChatsById = (tid) =>
+export const apiGetAllChatsById = (tid) =>
   axios.get(`${TUITS_API}/${tid}`)
     .then(response => response.data)
 
