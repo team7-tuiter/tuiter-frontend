@@ -52,18 +52,19 @@ export const messageSlice = createSlice({
     },
     [sendMessage.fulfilled] : (state, action) => {
       state.status = 'succeded'
-      if (action.payload !== undefined) state.messages.push(action.payload)
+      if (action.payload) state.messages.push(action.payload)
     },
     [sendMessage.rejected] : (state, action) => {
       state.status = 'failed'
       state.error = action.error.message
     },
+    // deleteMessage
     [deleteMessage.pending] : (state, action) => {
       state.status = 'loading'
     },
     [deleteMessage.fulfilled] : (state, action) => {
       state.status = 'succeded'
-      state.messages = state.messages.filter((message) => message._id !== action.payload._id)
+      state.messages = state.messages.filter((message) => message._id !== action.payload)
     },
     [deleteMessage.rejected] : (state, action) => {
       state.status = 'failed'
