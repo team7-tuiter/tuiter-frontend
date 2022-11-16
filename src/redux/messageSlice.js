@@ -59,6 +59,11 @@ export const deleteMessage = createAsyncThunk(
 export const messageSlice = createSlice({
   name: 'messages',
   initialState,
+  reducers: {
+    receiveMessage: (state, action) => {
+      state.messages.push(action.payload)
+    }
+  },
   extraReducers: {
     // sendMessage
     [sendMessage.pending] : (state, action) => {
@@ -86,6 +91,9 @@ export const messageSlice = createSlice({
     }
   }
 })
+
+// action selector
+export const { receiveMessage } = messageSlice.actions
 
 // state selector
 export const selectMessages = (state) => state.messages.messages
