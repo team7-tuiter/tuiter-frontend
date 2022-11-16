@@ -25,7 +25,7 @@ const ChatApp = ({ socket, from, to }) => {
 
   useEffect(() => {
     socket.on('receiveMessage', (data) => {
-      receiveMessage(data)
+      dispatch( receiveMessage(data) )
     })
   }, []) 
 
