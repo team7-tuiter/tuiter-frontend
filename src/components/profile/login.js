@@ -1,7 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import * as service from "../../services/users-service";
-import { registerUsingUsername } from '../../services/auth-service';
+import { registerUsingUsername, signInUsingUsername } from '../../services/auth-service';
 import React from "react";
 import { UserList } from "./user-list";
 
@@ -19,6 +19,10 @@ export const Login = () => {
       .then(users => {
         setExistingUsers(users)
       })
+
+  /**
+   * Registers the user in the firebase.
+   */
   const register = async () => {
     try {
       let userCredential = await registerUsingUsername(newUser._username, newUser._password);
@@ -27,6 +31,19 @@ export const Login = () => {
       alert(e.message);
     }
   }
+
+  /**
+   * Logs in the user in the firebase.
+   */
+  const signIn = async () => {
+    try {
+      let userCredential = await signInUsingUsername(loginUser._username, loginUser._password);
+    } catch (e) {
+      console.error(e);
+      alert(e.message);
+    }
+  }
+
   service.createUser(newUser)
     .then(findAllUsers);
   const login = () =>
@@ -58,7 +75,7 @@ export const Login = () => {
         onChange={(e) =>
           setLoginUser({ ...loginUser, _password: e.target.value })}
         placeholder="password" type="password" />
-      <button onClick={login} className="btn btn-primary mb-5">Login</button>
+      <button onClick={signIn} className="btn btn-primary mb-5">Login</button>
 
       <h1>Login As</h1>
 
