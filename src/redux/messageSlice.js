@@ -1,3 +1,6 @@
+/**
+ * @file implements messageSlice
+ */
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import {
   apiSendMessage,
@@ -12,7 +15,12 @@ const initialState = {
   error: null
 }
 
-// sendMessage
+
+/**
+ * Async thunk calls the service function apiSendMessage
+ * @param payload contains the from and to user ids, as well as the message object
+ * @returns message object or a rejectWithValue oject
+ */
 export const sendMessage = createAsyncThunk(
   'chats/sendMessage', 
   async (payload, { rejectWithValue }) => {
@@ -26,7 +34,11 @@ export const sendMessage = createAsyncThunk(
     }
 })
 
-// deleteMessage
+/**
+ * Async thunk calls the service function apiDeleteMessage
+ * @param payload contains the from and to user ids 
+ * @returns delete status or rejectWithValue object
+ */
 export const deleteMessage = createAsyncThunk(
   'chats/deleteMessage', 
   async (payload, { rejectWithValue }) => {
@@ -41,10 +53,17 @@ export const deleteMessage = createAsyncThunk(
 })
 
 
-// messageSlicer
+/**
+ * Message slice with reducers. 
+ */
 export const messageSlice = createSlice({
   name: 'messages',
   initialState,
+  reducers: {
+    receiveMessage: (state, action) => {
+      state.messages.push(action.payload)
+    }
+  },
   extraReducers: {
     // sendMessage
     [sendMessage.pending] : (state, action) => {
@@ -73,12 +92,15 @@ export const messageSlice = createSlice({
   }
 })
 
+// action selector
+export const { receiveMessage } = messageSlice.actions
+
 // state selector
 export const selectMessages = (state) => state.messages.messages
 export const getMessagesStatus = (state) => state.messages.status
 export const getMessagesError = (state) => state.messages.error
 
-
+// reducer
 export default messageSlice.reducer
 
 

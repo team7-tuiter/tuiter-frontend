@@ -1,3 +1,6 @@
+/**
+ * @file implements chatSlice
+ */
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import {
   apiGetSingleChat,
@@ -13,7 +16,11 @@ const initialState = {
   error: null
 }
 
-// getSingleChat
+/**
+ * Async thunk calls the service function apiGetSingleChat
+ * @param payload contains the from and to user ids 
+ * @returns chat object or a rejectWithValue oject
+ */
 export const getSingleChat = createAsyncThunk(
   'chats/getSingleChat', 
   async (payload, { rejectWithValue }) => {
@@ -27,7 +34,11 @@ export const getSingleChat = createAsyncThunk(
     }
 })
 
-// getAllChatsById
+/**
+ * Async thunk calls the service function apiGetAllChatsById
+ * @param payload contains the id of the user
+ * @returns list of chat objects or a rejectWithValue oject
+ */
 export const getAllChatsById = createAsyncThunk(
   'chats/getAllChatsById', 
   async (payload, { rejectWithValue }) => {
@@ -41,7 +52,11 @@ export const getAllChatsById = createAsyncThunk(
     }
 })
 
-// deleteSingleChat
+/**
+ * Async thunk calls the service function apiDeleteSingleChat
+ * @param payload contains the from and to user ids 
+ * @returns delete status or rejectWithValue object
+ */
 export const deleteSingleChat = createAsyncThunk(
   'chats/deleteSingleChat', 
   async (payload, { rejectWithValue }) => {
@@ -56,7 +71,9 @@ export const deleteSingleChat = createAsyncThunk(
 })
 
 
-// chatSlicer
+/**
+ * Chat slice with reducers. 
+ */
 export const chatSlice = createSlice({
   name: 'chats',
   initialState,
@@ -107,7 +124,7 @@ export const selectChat = (state) => state.chats.chats
 export const getChatStatus = (state) => state.chats.status
 export const getChatError = (state) => state.chats.error
 
-
+// reducer
 export default chatSlice.reducer
 
 
