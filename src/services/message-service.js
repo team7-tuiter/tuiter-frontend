@@ -16,7 +16,7 @@ const USERS_API = `${BASE_URL}/api/users`
  * @returns response with the message object 
 */
 export const apiSendMessage = (message) => 
-  socket.emit(`sendMessage`, message)
+  socket.emit('sendMessage', message)
     .then(response => response.data)
 
 /** 
