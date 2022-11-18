@@ -33,7 +33,7 @@ const ChatApp = ({ socket, from, to }) => {
     <div className="main">
 
     </div>
-  );
+  )
 }
 
 export default ChatApp;
