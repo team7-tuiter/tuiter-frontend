@@ -1,27 +1,37 @@
-import io from "socket.io-client"
-import { useState } from "react"
-import React from 'react'
-import ChatApp from "./ChatApp.js"
+import React, { useEffect, useState } from "react"
+import { useSelector, useDispatch } from 'react-redux'
+import { sendMessage, receiveMessage } from '../../redux/messageSlice'
 
-const socket = io.connect("http://localhost:4000")
+const Messages = ({ socket, from, to }) => {
 
-const Messages = () => {
-  
-  const [from, setFrom] = useState("")
-  const [to, setTo] = useState("")
-  const [room, setRoom] = useState("")
-  const [showChat, setShowChat] = useState(false)
+  const messageList = useSelector((state) => state.messages.messages)
+  const dispatch = useDispatch()
+  const [currentMessage, setCurrentMessage] = useState("")
 
-  const joinRoom = () => {
-    if (from !== "" && to !== "" && room !== "") {
-      socket.emit("join_room", room)
-      setShowChat(true)
+  const send = async () => {
+    if (currentMessage !== "") {
+      const messageData = {
+        room: `${from} -- ${to}`,
+        message: currentMessage,
+        time:
+          new Date(Date.now()).getHours() +
+          ":" +
+          new Date(Date.now()).getMinutes(),
+      }
+      dispatch( sendMessage(messageData) )
+      setCurrentMessage("")
     }
   }
 
+  useEffect(() => {
+    socket.on('receiveMessage', (data) => {
+      dispatch( receiveMessage(data) )
+    })
+  }, []) 
+
   return (
-    <div className="main-thing">
-      { showChat ?? <ChatApp socket={socket} from={from} room={room} /> }
+    <div className="main">
+
     </div>
   )
 }
