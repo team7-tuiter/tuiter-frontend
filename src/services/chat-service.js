@@ -8,16 +8,6 @@ const TUITS_API = `${BASE_URL}/api/tuits`
 const USERS_API = `${BASE_URL}/api/users`
 
 /** 
- * Retrieves a chat between two users
- * @param uid1 String user id 1
- * @param uid2 String user id 2
- * @returns response with the chat object
-*/
-export const apiGetSingleChat = (uid1, uid2) => 
-  axios.get(`${USERS_API}/${uid1}/users/${uid2}/chat`)
-    .then(response => response.data[0])
-
-/** 
  * Retrieves all chats involving a user
  * @param uid1 String user id 1
  * @returns response with an array of chat objects

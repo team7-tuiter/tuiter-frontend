@@ -1,7 +1,7 @@
 import React from "react";
 import Navigation from "../navigation";
 import WhatsHappening from "../whats-happening";
-import {BrowserRouter, Routes, Route, HashRouter} from "react-router-dom";
+import { Routes, Route, HashRouter } from "react-router-dom";
 import Home from "../home";
 import Bookmarks from "../bookmarks";
 import Profile from "../profile";
@@ -9,12 +9,13 @@ import './tuiter.css'
 import EditProfile from "../profile/edit-profile";
 import Explore from "../explore";
 import Notifications from "../notifications";
-import Messages from "../messages";
 import Lists from "../lists";
 import More from "../more";
 import {Login} from "../profile/login";
 import Movies from "../movies";
 import MovieDetails from "../movies/details";
+import Messages from "../messages";
+import Chats from "../chats"
 
 function Tuiter () {
   return(
@@ -42,6 +43,7 @@ function Tuiter () {
               <Route path="/movies" element={<Movies/>}/>
               <Route path="/movies/:imdbID" element={<MovieDetails/>}/>
               <Route path="/more" element={<More/>}/>
+              <Route path="/chats" element={<Chats/>}/>
             </Routes>
           </div>
           <div className="ttr-right-column">
