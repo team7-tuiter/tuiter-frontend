@@ -42,7 +42,9 @@ const Chats = () => {
 
   return (
     <div>
+      <i class="fa-solid fa-plus"></i>
       { chats }
+      <input>  </input>
     </div>
   )
 }
