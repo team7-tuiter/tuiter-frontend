@@ -5,6 +5,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import {
   apiSendMessage,
   apiDeleteMessage,
+  apiGetSingleChat
 } from '../services/message-service'
 
 
@@ -15,6 +16,23 @@ const initialState = {
   error: null
 }
 
+/**
+ * Async thunk calls the service function apiGetSingleChat
+ * @param payload contains the from and to user ids 
+ * @returns chat object or a rejectWithValue oject
+ */
+ export const getSingleChat = createAsyncThunk(
+  'chats/getSingleChat', 
+  async (payload, { rejectWithValue }) => {
+    const { from, to } = payload
+    try {
+      const response = await apiGetSingleChat(from, to)
+      return response.data[0]
+    } catch(e) {
+      if (!e.response) throw e
+      return rejectWithValue(e.response.data)
+    }
+})
 
 /**
  * Async thunk calls the service function apiSendMessage
@@ -65,6 +83,18 @@ export const messageSlice = createSlice({
     }
   },
   extraReducers: {
+    // getSingleChat
+    [getSingleChat.pending] : (state, action) => {
+      state.status = 'loading'
+    },
+    [getSingleChat.fulfilled] : (state, action) => {
+      state.status = 'succeded'
+      state.chats = action.payload
+    },
+    [getSingleChat.rejected] : (state, action) => {
+      state.status = 'failed'
+      state.error = action.error.message
+    },
     // sendMessage
     [sendMessage.pending] : (state, action) => {
       state.status = 'loading'

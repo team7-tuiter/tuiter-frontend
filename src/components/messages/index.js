@@ -1,27 +1,64 @@
+import React, { useEffect, useState } from "react"
+import { useSelector, useDispatch } from 'react-redux'
+import { sendMessage, receiveMessage } from '../../redux/messageSlice'
 import io from "socket.io-client"
-import { useState } from "react"
-import React from 'react'
-import ChatApp from "./ChatApp.js"
 
 const socket = io.connect("http://localhost:4000")
 
 const Messages = () => {
-  
-  const [from, setFrom] = useState("")
-  const [to, setTo] = useState("")
-  const [room, setRoom] = useState("")
-  const [showChat, setShowChat] = useState(false)
 
-  const joinRoom = () => {
-    if (from !== "" && to !== "" && room !== "") {
-      socket.emit("join_room", room)
-      setShowChat(true)
+  const messageList = useSelector((state) => state.messages.messages)
+  const dispatch = useDispatch()
+  const [currentMessage, setCurrentMessage] = useState("")
+  const from = useState("")
+  const to = useState("")
+
+  const send = async () => {
+    if (currentMessage !== "") {
+      const messageData = {
+        room: `${from} -- ${to}`,
+        message: currentMessage,
+        sentOn:
+          new Date(Date.now()).getHours() +
+          ":" +
+          new Date(Date.now()).getMinutes(),
+      }
+      dispatch( sendMessage(messageData) )
+      setCurrentMessage("")
     }
   }
 
+  useEffect(() => {
+    socket.on('receiveMessage', (data) => {
+      dispatch( receiveMessage(data) )
+    })
+  }, [dispatch]) 
+
+  const messages = messageList.map( (message) => {
+    return (
+      <div>
+        <p> {message.from} </p>
+        <p> {message.to} </p>
+        <p> {message.sentOn} </p>
+        <p> {message.message} </p>
+      </div>
+    )
+  })
+
   return (
-    <div className="main-thing">
-      { showChat ?? <ChatApp socket={socket} from={from} room={room} /> }
+    <div>
+      { messages }
+      <input 
+        type="text"
+        value={currentMessage}
+        placeholder="type..."
+        onChange={(event) => {
+          setCurrentMessage(event.target.value)
+        }}
+        onKeyPress={(event) => {
+          event.key === "Enter" && send()
+        }}/> 
+      <button onClick={send}></button>
     </div>
   )
 }
