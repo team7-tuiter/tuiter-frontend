@@ -1,12 +1,10 @@
-import io from "socket.io-client"
 import { useEffect, useState } from "react"
 import React from 'react'
 import { getAllChatsById } from "../../redux/chatSlice"
 import { getSingleChat } from "../../redux/messageSlice.js"
 import { useSelector, useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
-
-const socket = io.connect("http://localhost:4000")
+import { socket } from '../../socket'
 
 const Chats = () => {
 
@@ -14,6 +12,7 @@ const Chats = () => {
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const user = useState("")
+  const [input, setInput] = useState(false)
 
   useEffect(() => {
     if (user._id) {
@@ -39,12 +38,17 @@ const Chats = () => {
       </div>
     )
   })
-
+  
   return (
     <div>
-      <i class="fa-solid fa-plus"></i>
+      <h1>Chats</h1>
+      <i 
+        class="fa-solid fa-plus"
+        onClick={setInput(true)}/>
       { chats }
-      <input>  </input>
+      
+      {input && <input/>}
+      <h1> Chats </h1>
     </div>
   )
 }

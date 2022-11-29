@@ -2,11 +2,9 @@
  * @file implements the message data service
  */
 import axios from "axios"
-import io from "socket.io-client"
-
-const socket = io.connect("http://localhost:4000")
+import { socket } from '../socket'
 const BASE_URL = "http://localhost:4000"
-const USERS_API = `${BASE_URL}/api/users`
+const USERS_API = `${BASE_URL}/users`
 
 /** 
  * Retrieves a chat between two users

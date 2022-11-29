@@ -27,24 +27,24 @@ function Tuiter () {
           </div>
           <div className="ttr-center-column">
             <Routes>
-              <Route path="/" element={<Home/>}/>
-              <Route path="/login" element={<Login/>}/>
-              <Route path="/tuiter" element={<Home/>}/>
-              <Route path="/tuiter/:uid" element={<Home/>}/>
-              <Route path="/home" element={<Home/>}/>
-              <Route path="/home/:uid" element={<Home/>}/>
-              <Route path="/explore" element={<Explore/>}/>
-              <Route path="/notifications" element={<Notifications/>}/>
-              <Route path="/messages" element={<Messages/>}/>
-              <Route path="/bookmarks" element={<Bookmarks/>}/>
-              <Route path="/lists" element={<Lists/>}/>
-              <Route path="/profile" element={<Profile/>}/>
-              <Route path="/profile/edit" element={<EditProfile/>}/>
-              <Route path="/movies" element={<Movies/>}/>
-              <Route path="/movies/:imdbID" element={<MovieDetails/>}/>
-              <Route path="/more" element={<More/>}/>
-              <Route path="/chats" element={<Chats/>}/>
-            </Routes>
+              <Route exact path="/" element={<Home/>}/>
+              <Route exact path="/login" element={<Login/>}/>
+              <Route exact path="/tuiter" element={<Home/>}/>
+              <Route exact path="/tuiter/:uid" element={<Home/>}/>
+              <Route exact path="/home" element={<Home/>}/>
+              <Route exact path="/home/:uid" element={<Home/>}/>
+              <Route exact path="/explore" element={<Explore/>}/>
+              <Route exact path="/notifications" element={<Notifications/>}/>
+              <Route exact path="/messages" element={<Messages/>}/>
+              <Route exact path="/bookmarks" element={<Bookmarks/>}/>
+              <Route exact path="/lists" element={<Lists/>}/>
+              <Route exact path="/profile" element={<Profile/>}/>
+              <Route exact path="/profile/edit" element={<EditProfile/>}/>
+              <Route exact path="/movies" element={<Movies/>}/>
+              <Route exact path="/movies/:imdbID" element={<MovieDetails/>}/>
+              <Route exact path="/more" element={<More/>}/>
+              <Route exact path="/chats" element={<Chats/>}/>
+            </Routes> 
           </div>
           <div className="ttr-right-column">
             <WhatsHappening/>

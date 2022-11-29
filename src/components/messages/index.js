@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from "react"
 import { useSelector, useDispatch } from 'react-redux'
 import { sendMessage, receiveMessage } from '../../redux/messageSlice'
-import io from "socket.io-client"
-
-const socket = io.connect("http://localhost:4000")
+import { socket } from '../../socket'
 
 const Messages = () => {
 

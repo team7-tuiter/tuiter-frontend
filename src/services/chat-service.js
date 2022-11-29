@@ -4,8 +4,8 @@
 import axios from "axios"
 
 const BASE_URL = "http://localhost:4000"
-const TUITS_API = `${BASE_URL}/api/tuits`
-const USERS_API = `${BASE_URL}/api/users`
+const TUITS_API = `${BASE_URL}/tuits`
+const USERS_API = `${BASE_URL}/users`
 
 /** 
  * Retrieves all chats involving a user
