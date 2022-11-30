@@ -45,6 +45,11 @@ const Messages = () => {
 
   return (
     <div>
+      <i class="fa-solid fa-upload"></i>
+      <h1>
+        THIS IS MESSAGES
+      </h1>
+      
       { messages }
       <input 
         type="text"

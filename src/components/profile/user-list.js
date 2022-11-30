@@ -5,6 +5,7 @@ export const UserList = ({users, deleteUser}) => {
   return (
     <div className="list-group">
       {
+        users && 
         users.map(user => {
           return (
             <Link className="list-group-item"

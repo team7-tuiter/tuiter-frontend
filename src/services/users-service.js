@@ -8,9 +8,10 @@ export const createUser = (user) =>
   axios.post(`${USERS_API}`, user)
     .then(response => response.data);
 
-export const findAllUsers = () =>
-  axios.get(USERS_API)
-    .then(response => response.data);
+export const findAllUsers = async () => {
+  const users = await axios.get(USERS_API)
+  return users.data
+}
 
 export const findUserById = (uid) =>
   axios.get(`${USERS_API}/${uid}`)

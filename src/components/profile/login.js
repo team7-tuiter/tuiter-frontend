@@ -4,12 +4,17 @@ import * as service from "../../services/users-service";
 import { registerUsingUsername, signInUsingUsername } from '../../services/auth-service';
 import React from "react";
 import { UserList } from "./user-list";
+import { useSelector, useDispatch } from 'react-redux'
+import { signup, signin } from "../../redux/userSlice"
+
+
 
 export const Login = () => {
   const [existingUsers, setExistingUsers] = useState([]);
   const [newUser, setNewUser] = useState({});
   const [loginUser, setLoginUser] = useState({});
-  // const navigate = useNavigate()
+  const user = useSelector((state) => state.user.user)
+  const dispatch = useDispatch()
 
   const deleteUser = (uid) =>
     service.deleteUser(uid)
@@ -26,6 +31,11 @@ export const Login = () => {
   const register = async () => {
     try {
       let userCredential = await registerUsingUsername(newUser._username, newUser._password);
+      const user = {
+        _id: userCredential.uid, 
+        username: newUser._username
+      }
+      dispatch( signup(user) )
     } catch (e) {
       console.error(e);
       alert(e.message);
@@ -38,20 +48,15 @@ export const Login = () => {
   const signIn = async () => {
     try {
       let userCredential = await signInUsingUsername(loginUser._username, loginUser._password);
+      dispatch( signin(userCredential.uid) )
     } catch (e) {
       console.error(e);
       alert(e.message);
     }
   }
 
-  service.createUser(newUser)
-    .then(findAllUsers);
-  const login = () =>
-    service.findUserByCredentials(loginUser)
-      .then((user) => {
-        //navigate(`/home/${user._id}`)
-      });
   useEffect(findAllUsers, []);
+
   return (
     <div>
       <h1>Register</h1>
