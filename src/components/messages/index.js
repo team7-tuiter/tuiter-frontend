@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from "react"
 import { useSelector, useDispatch } from 'react-redux'
 import { sendMessage, receiveMessage } from '../../redux/messageSlice'
-import io from "socket.io-client"
-
-const socket = io.connect("http://localhost:4000")
+import { socket } from '../../socket'
 
 const Messages = () => {
 
@@ -12,11 +10,12 @@ const Messages = () => {
   const [currentMessage, setCurrentMessage] = useState("")
   const from = useState("")
   const to = useState("")
+  const room = useSelector((state) => state.room.room)
 
   const send = async () => {
     if (currentMessage !== "") {
       const messageData = {
-        room: `${from} -- ${to}`,
+        room,
         message: currentMessage,
         sentOn:
           new Date(Date.now()).getHours() +
@@ -34,20 +33,15 @@ const Messages = () => {
     })
   }, [dispatch]) 
 
-  const messages = messageList.map( (message) => {
-    return (
-      <div>
-        <p> {message.from} </p>
-        <p> {message.to} </p>
-        <p> {message.sentOn} </p>
-        <p> {message.message} </p>
-      </div>
-    )
-  })
-
   return (
     <div>
-      { messages }
+      <h1>
+        Messages
+      </h1>
+      
+      { messageList?.message }
+
+      <i className="fa-solid fa-upload"></i>
       <input 
         type="text"
         value={currentMessage}
@@ -58,7 +52,7 @@ const Messages = () => {
         onKeyPress={(event) => {
           event.key === "Enter" && send()
         }}/> 
-      <button onClick={send}></button>
+      <button onClick={send}> Send Message </button>
     </div>
   )
 }

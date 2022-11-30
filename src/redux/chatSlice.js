@@ -4,7 +4,8 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import {
   apiGetAllChatsById,
-  apiDeleteSingleChat
+  apiDeleteSingleChat,
+  apiCreateChat
 } from '../services/chat-service'
 
 
@@ -23,10 +24,9 @@ const initialState = {
 export const getAllChatsById = createAsyncThunk(
   'chats/getAllChatsById', 
   async (payload, { rejectWithValue }) => {
-    const { id } = payload
     try {
-      const response = await apiGetAllChatsById(id)
-      return response.data
+      const response = await apiGetAllChatsById(payload)
+      return response
     } catch(e) {
       if (!e.response) throw e
       return rejectWithValue(e.response.data)
@@ -51,6 +51,22 @@ export const deleteSingleChat = createAsyncThunk(
     }
 })
 
+/**
+ * Async thunc calls the service function apiCreateChat 
+ * @param payload contains the chat object 
+ * @returns chat object 
+ */
+export const createChat = createAsyncThunk(
+'chats/createChat', 
+async (payload, { rejectWithValue }) => {
+  try {
+    const response = await apiCreateChat(payload)
+    return response
+  } catch(e) {
+    if (!e.response) throw e
+    return rejectWithValue(e.response.data)
+  }
+})
 
 /**
  * Chat slice with reducers. 
@@ -85,7 +101,19 @@ export const chatSlice = createSlice({
     [deleteSingleChat.rejected] : (state, action) => {
       state.status = 'failed'
       state.error = action.error.message
-    }
+    },
+    // createChat 
+    [createChat.pending] : (state, action) => {
+      state.status = 'loading'
+    },
+    [createChat.fulfilled] : (state, action) => {
+      state.status = 'succeded'
+      state.chats.push(action.payload)
+    },
+    [createChat.rejected] : (state, action) => {
+      state.status = 'failed'
+      state.error = action.error.message
+    },
   }
 })
 

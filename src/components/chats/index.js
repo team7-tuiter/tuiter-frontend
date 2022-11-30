@@ -1,50 +1,66 @@
-import io from "socket.io-client"
 import { useEffect, useState } from "react"
 import React from 'react'
 import { getAllChatsById } from "../../redux/chatSlice"
 import { getSingleChat } from "../../redux/messageSlice.js"
+import { createChat } from "../../redux/chatSlice"
 import { useSelector, useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
-
-const socket = io.connect("http://localhost:4000")
+import { socket } from '../../socket'
+import { joinRoom } from "../../redux/roomSlice"
 
 const Chats = () => {
 
-  const chatList = useSelector((state) => state.chats.chats)
+  const chats = useSelector((state) => state.chats.chats)
   const navigate = useNavigate()
   const dispatch = useDispatch()
-  const user = useState("")
+  const user = useSelector((state) => state.user.user)
+  const [showInput, setShowInput] = useState(false)
+  const [inputUser, setInputUser] = useState("")
 
   useEffect(() => {
-    if (user._id) {
+    if (user && user._id) {
       dispatch( getAllChatsById(user._id) )
     }
-  }, [dispatch, user._id])
+  }, [dispatch, user])
 
-  const joinChat = (chat) => {
-    if (chat.from !== "" && chat.to !== "") {
-      const room = `${chat.from} -- ${chat.to}`
+
+  const goToNewConversation = (loggedUsername, otherUsername) => {
+    if (loggedUsername !== "" && otherUsername !== "") {
+      // userId order is made by string comparison 
+      const {userId1, userId2} = loggedUsername > otherUsername ? {userId1: loggedUsername, userId2: otherUsername} : {userId1: otherUsername, userId2: loggedUsername}
+      const chatObj = {
+        userId1,
+        userId2,
+        messages : []
+      }
+      dispatch( createChat(chatObj) )
+      const room = `${userId1} -- ${userId2}`
       socket.emit("join_room", room)
-      dispatch( getSingleChat(chat.from, chat.to) )
+      dispatch( joinRoom(room) )
       navigate("/messages")
     }
   }
-  
-  const chats = chatList.map((chat) => {
-    return (
-      <div onClick={joinChat(chat)}> 
-        <p> {chat.to} </p>
-        <p> {chat.sentOn} </p>
-        <p> {chat.lastMessage} </p>
-      </div>
-    )
-  })
 
   return (
     <div>
-      <i class="fa-solid fa-plus"></i>
-      { chats }
-      <input>  </input>
+      <h1>Chats</h1>
+    
+      <button onClick={() => setShowInput(true)}> New Message </button>
+
+      { chats?.messages }
+      
+      {showInput && (
+      <> 
+      <input 
+        type="text" 
+        placeholder="type user..." 
+        onChange={(e) =>
+          setInputUser(e.target.value)}
+        /> 
+
+       <button onClick={() => goToNewConversation(user.username, inputUser)} > Go to conversation </button>
+      </>
+      )}
     </div>
   )
 }

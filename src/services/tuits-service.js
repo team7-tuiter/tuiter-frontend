@@ -1,12 +1,11 @@
 import axios from "axios";
 const BASE_URL = "http://localhost:4000"
-const TUITS_API = `${BASE_URL}/api/tuits`;
-const USERS_API = `${BASE_URL}/api/users`;
+const TUITS_API = `${BASE_URL}/tuits`;
+const USERS_API = `${BASE_URL}/users`;
 
 export const findAllTuits = () => 
-  axios.get("http://localhost:4000/api/tuits")
+  axios.get(TUITS_API)
   .then(response => response.data);
-
 
 export const findTuitById = (tid) =>
   axios.get(`${TUITS_API}/${tid}`)
@@ -16,8 +15,8 @@ export const findTuitByUser = (uid) =>
   axios.get(`${USERS_API}/${uid}/tuits`)
     .then(response => response.data);
 
-export const createTuit = (uid, tuit) =>
-  axios.post(`${USERS_API}/${uid}/tuits`, tuit)
+export const createTuit = (tuit) =>
+  axios.post(TUITS_API, tuit)
     .then(response => response.data);
 
 export const updateTuit = (tid, tuit) =>
