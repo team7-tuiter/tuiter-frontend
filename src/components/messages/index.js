@@ -10,11 +10,12 @@ const Messages = () => {
   const [currentMessage, setCurrentMessage] = useState("")
   const from = useState("")
   const to = useState("")
+  const room = useSelector((state) => state.room.room)
 
   const send = async () => {
     if (currentMessage !== "") {
       const messageData = {
-        room: `${from} -- ${to}`,
+        room,
         message: currentMessage,
         sentOn:
           new Date(Date.now()).getHours() +
@@ -32,25 +33,15 @@ const Messages = () => {
     })
   }, [dispatch]) 
 
-  const messages = messageList.map( (message) => {
-    return (
-      <div>
-        <p> {message.from} </p>
-        <p> {message.to} </p>
-        <p> {message.sentOn} </p>
-        <p> {message.message} </p>
-      </div>
-    )
-  })
-
   return (
     <div>
-      <i class="fa-solid fa-upload"></i>
       <h1>
-        THIS IS MESSAGES
+        Messages
       </h1>
       
-      { messages }
+      { messageList?.message }
+
+      <i className="fa-solid fa-upload"></i>
       <input 
         type="text"
         value={currentMessage}
@@ -61,7 +52,7 @@ const Messages = () => {
         onKeyPress={(event) => {
           event.key === "Enter" && send()
         }}/> 
-      <button onClick={send}></button>
+      <button onClick={send}> Send Message </button>
     </div>
   )
 }

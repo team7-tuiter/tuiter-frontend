@@ -57,6 +57,8 @@ export const Login = () => {
 
   useEffect(findAllUsers, []);
 
+  console.log(user)
+  
   return (
     <div>
       <h1>Register</h1>

@@ -8,7 +8,7 @@ const USERS_API = `${BASE_URL}/users`
 
 /** 
  * Retrieves all chats involving a user
- * @param uid1 String user id 1
+ * @param uid String user id 
  * @returns response with an array of chat objects
 */
 export const apiGetAllChatsById = (uid) =>
@@ -34,3 +34,12 @@ export const apiDeleteSingleChat = (uid1, uid2) =>
 export const apiGetSingleChat = (uid1, uid2) => 
   axios.get(`${USERS_API}/${uid1}/users/${uid2}/chat`)
     .then(response => response.data[0])
+
+/**
+ * Creates new chat
+ * @param chat Chat object with empty messages array
+ * @returns chat object 
+ */
+export const apiCreateChat = (chat) => 
+  axios.post(`${BASE_URL}/chat`, chat)
+    .then(response => response.data)
