@@ -30,10 +30,10 @@ export const Login = () => {
    */
   const register = async () => {
     try {
-      let userCredential = await registerUsingUsername(newUser._username, newUser._password);
+      let userCredential = await registerUsingUsername(newUser.username, newUser.password);
       const user = {
         _id: userCredential.uid, 
-        username: newUser._username
+        username: newUser.username
       }
       dispatch( signup(user) )
     } catch (e) {
@@ -47,7 +47,7 @@ export const Login = () => {
    */
   const signIn = async () => {
     try {
-      let userCredential = await signInUsingUsername(loginUser._username, loginUser._password);
+      let userCredential = await signInUsingUsername(loginUser.username, loginUser.password);
       dispatch( signin(userCredential.uid) )
     } catch (e) {
       console.error(e);
@@ -62,11 +62,11 @@ export const Login = () => {
       <h1>Register</h1>
       <input className="mb-2 form-control"
         onChange={(e) =>
-          setNewUser({ ...newUser, _username: e.target.value })}
+          setNewUser({ ...newUser, username: e.target.value })}
         placeholder="username" />
       <input className="mb-2 form-control"
         onChange={(e) =>
-          setNewUser({ ...newUser, _password: e.target.value })}
+          setNewUser({ ...newUser, password: e.target.value })}
         placeholder="password" type="password" />
       <button onClick={register} className="btn btn-primary mb-5">Register
       </button>
@@ -74,11 +74,11 @@ export const Login = () => {
       <h1>Login</h1>
       <input className="mb-2 form-control"
         onChange={(e) =>
-          setLoginUser({ ...loginUser, _username: e.target.value })}
+          setLoginUser({ ...loginUser, username: e.target.value })}
         placeholder="username" />
       <input className="mb-2 form-control"
         onChange={(e) =>
-          setLoginUser({ ...loginUser, _password: e.target.value })}
+          setLoginUser({ ...loginUser, password: e.target.value })}
         placeholder="password" type="password" />
       <button onClick={signIn} className="btn btn-primary mb-5">Login</button>
 

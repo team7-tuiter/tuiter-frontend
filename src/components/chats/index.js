@@ -45,10 +45,9 @@ const Chats = () => {
       <i 
         class="fa-solid fa-plus"
         onClick={setInput(true)}/>
-      { chats }
+      {/* { chats }
       
-      {input && <input/>}
-      <h1> Chats </h1>
+      {input && <input/>} */}
     </div>
   )
 }
