@@ -22,10 +22,10 @@
    async (payload, { rejectWithValue }) => {
      try {
        const response = await createUser(payload)
-       return response.data
+       return response
      } catch(e) {
        if (!e.response) throw e
-       return rejectWithValue(e.response.data)
+       return rejectWithValue(e.response)
      }
  })
  
@@ -35,14 +35,16 @@
   * @returns user object or a rejectWithValue oject
   */
  export const signin = createAsyncThunk(
-   'users/uid', 
+   'login/uid', 
    async (payload, { rejectWithValue }) => {
      try {
+       console.log("payload -- ", payload)
        const response = await findUserById(payload)
-       return response.data
+       console.log("response", response)
+       return response
      } catch(e) {
        if (!e.response) throw e
-       return rejectWithValue(e.response.data)
+       return rejectWithValue(e.response)
      }
  })
  

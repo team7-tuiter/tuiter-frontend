@@ -47,7 +47,7 @@ export const Login = () => {
    */
   const signIn = async () => {
     try {
-      let userCredential = await signInUsingUsername(loginUser.username, loginUser.password);
+      const userCredential = await signInUsingUsername(loginUser.username, loginUser.password);
       dispatch( signin(userCredential.uid) )
     } catch (e) {
       console.error(e);
