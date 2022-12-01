@@ -30,10 +30,10 @@ const Messages = () => {
         getDownloadURL(res.ref).then((url) => {
           console.log(url);
           messageData.message = "img- " + url;
+          dispatch(sendMessage(messageData));
+          setFile(null);
         });
       });
-      dispatch(sendMessage(messageData));
-      setFile(null);
     }
     if (currentMessage !== "") {
       const messageData = {
