@@ -1,35 +1,39 @@
-import React from "react";
+import React, { useCallback } from "react";
 import Tuits from "../tuits";
 import * as service from "../../services/tuits-service";
 import {useEffect, useState} from "react";
-import {useLocation, useParams} from "react-router-dom";
+import {useParams} from "react-router-dom";
 
 const Home = () => {
-  const location = useLocation();
   const {uid} = useParams();
   const [tuits, setTuits] = useState([]);
   const [tuit, setTuit] = useState('');
   const userId = uid;
-  const findTuits = () => {
+
+  const findTuits = useCallback( async () => {
     if(uid) {
-      return service.findTuitByUser(uid)
+      await service.findTuitByUser(uid)
         .then(tuits => setTuits(tuits))
     } else {
-      return service.findAllTuits()
+      await service.findAllTuits()
         .then(tuits => setTuits(tuits))
     }
-  }
+  }, [uid])
+
   useEffect(() => {
-    let isMounted = true;
     findTuits()
-    return () => {isMounted = false;}
   }, [])
-  const createTuit = () =>
-      service.createTuit(userId, {_tuit: tuit, _postedBy: userId})
-          .then(findTuits)
-  const deleteTuit = (tid) =>
-      service.deleteTuit(tid)
-          .then(findTuits)
+
+  const createTuit = async () => { 
+    await service.createTuit({tuit: tuit, postedBy: userId})
+    await findTuits()
+  }
+    
+  const deleteTuit = async (tid) => { 
+    await service.deleteTuit(tid)
+    await findTuits()
+  }
+    
   return(
     <div className="ttr-home">
       <div className="border border-bottom-0">

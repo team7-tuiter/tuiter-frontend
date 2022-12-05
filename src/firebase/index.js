@@ -1,4 +1,5 @@
 import { initializeApp } from "firebase/app";
+import { getStorage } from "firebase/storage";
 
 // Our web app's Firebase configuration for the firebase project.
 const firebaseConfig = {
@@ -7,8 +8,9 @@ const firebaseConfig = {
   projectId: "cs5500-team7",
   storageBucket: "cs5500-team7.appspot.com",
   messagingSenderId: "124041638041",
-  appId: "1:124041638041:web:f27a9a9fe1be3fbcaf4808"
+  appId: "1:124041638041:web:f27a9a9fe1be3fbcaf4808",
 };
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
+export const storage = getStorage(app);

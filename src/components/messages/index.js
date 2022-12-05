@@ -1,66 +1,92 @@
-import React, { useEffect, useState } from "react"
-import { useSelector, useDispatch } from 'react-redux'
-import { sendMessage, receiveMessage } from '../../redux/messageSlice'
-import io from "socket.io-client"
-
-const socket = io.connect("http://localhost:4000")
+import React, { useEffect, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { sendMessage, receiveMessage } from "../../redux/messageSlice";
+import { storage } from "../../firebase";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import SocketFactory from "../../socket";
 
 const Messages = () => {
+  const messageList = useSelector((state) => state.messages.messages);
+  const dispatch = useDispatch();
+  const [currentMessage, setCurrentMessage] = useState("");
+  const from = useState("");
+  const to = useState("");
+  const room = useSelector((state) => state.room.room);
 
-  const messageList = useSelector((state) => state.messages.messages)
-  const dispatch = useDispatch()
-  const [currentMessage, setCurrentMessage] = useState("")
-  const from = useState("")
-  const to = useState("")
+  const [file, setFile] = useState(null);
 
   const send = async () => {
-    if (currentMessage !== "") {
+    if (file !== null) {
       const messageData = {
-        room: `${from} -- ${to}`,
+        room,
         message: currentMessage,
         sentOn:
           new Date(Date.now()).getHours() +
           ":" +
           new Date(Date.now()).getMinutes(),
-      }
-      dispatch( sendMessage(messageData) )
-      setCurrentMessage("")
+      };
+      const fileref = ref(storage, `static/${Date.now()}`);
+      uploadBytes(fileref, file).then((res) => {
+        getDownloadURL(res.ref).then((url) => {
+          console.log(url);
+          messageData.message = "img- " + url;
+          dispatch(sendMessage(messageData));
+          setFile(null);
+        });
+      });
     }
-  }
+    if (currentMessage !== "") {
+      const messageData = {
+        room,
+        message: currentMessage,
+        sentOn:
+          new Date(Date.now()).getHours() +
+          ":" +
+          new Date(Date.now()).getMinutes(),
+      };
+      dispatch(sendMessage(messageData));
+      setCurrentMessage("");
+    }
+  };
 
   useEffect(() => {
-    socket.on('receiveMessage', (data) => {
-      dispatch( receiveMessage(data) )
-    })
-  }, [dispatch]) 
-
-  const messages = messageList.map( (message) => {
-    return (
-      <div>
-        <p> {message.from} </p>
-        <p> {message.to} </p>
-        <p> {message.sentOn} </p>
-        <p> {message.message} </p>
-      </div>
-    )
-  })
+    SocketFactory.getConnection().on("receiveMessage", (data) => {
+      dispatch(receiveMessage(data));
+    });
+  }, [dispatch]);
 
   return (
     <div>
-      { messages }
-      <input 
+      <h1>Messages</h1>
+
+      {messageList?.message}
+
+      <span>
+        <label for="fileInput">
+          <i className="fa-solid fa-upload"></i>
+        </label>
+        <input
+          type="file"
+          onChange={(event) => {
+            setFile(event.target.files[0]);
+          }}
+        />
+      </span>
+
+      <input
         type="text"
         value={currentMessage}
         placeholder="type..."
         onChange={(event) => {
-          setCurrentMessage(event.target.value)
+          setCurrentMessage(event.target.value);
         }}
         onKeyPress={(event) => {
-          event.key === "Enter" && send()
-        }}/> 
-      <button onClick={send}></button>
+          event.key === "Enter" && send();
+        }}
+      />
+      <button onClick={send}> Send Message </button>
     </div>
-  )
-}
+  );
+};
 
 export default Messages;

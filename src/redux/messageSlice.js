@@ -4,10 +4,10 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import {
   apiSendMessage,
-  apiDeleteMessage,
-  apiGetSingleChat
+  apiDeleteMessage
 } from '../services/message-service'
 
+import { apiGetSingleChat } from '../services/chat-service'
 
 // initial state
 const initialState = {

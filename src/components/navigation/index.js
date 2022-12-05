@@ -13,10 +13,9 @@ function Navigation() {
     {label: 'Messages', icon: 'fa-envelope', path: '/messages'},
     {label: 'Bookmarks', icon: 'fa-bookmark', path: '/bookmarks'},
     {label: 'Lists', icon: 'fa-list', path: '/lists'},
-    {label: 'Profile', icon: 'fa-user', path: '/profile'},
-    {label: 'Movies', icon: 'fa-user', path: '/movies'},
-    {label: 'More', icon: 'fa-circle-ellipsis', path: '/more'},
+    {label: 'Profile', icon: 'fa-circle-ellipsis', path: '/profile'},
     {label: 'Login', icon: 'fa-user', path: '/login'},
+    {label: 'Chats', icon: 'fa-comments', path: '/chats'}
   ];
   return (
     <div className="ttr-navigation">

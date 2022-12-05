@@ -2,6 +2,7 @@ import React from "react";
 import Tuits from "../tuits";
 import {Link} from "react-router-dom";
 
+
 const Profile = () => {
   return(
     <div className="ttr-profile">

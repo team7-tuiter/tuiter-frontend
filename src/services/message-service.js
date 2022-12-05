@@ -2,21 +2,9 @@
  * @file implements the message data service
  */
 import axios from "axios"
-import io from "socket.io-client"
-
-const socket = io.connect("http://localhost:4000")
+import SocketFactory from '../socket'
 const BASE_URL = "http://localhost:4000"
-const USERS_API = `${BASE_URL}/api/users`
-
-/** 
- * Retrieves a chat between two users
- * @param uid1 String user id 1
- * @param uid2 String user id 2
- * @returns response with the chat object
-*/
-export const apiGetSingleChat = (uid1, uid2) => 
-  axios.get(`${USERS_API}/${uid1}/users/${uid2}/chat`)
-    .then(response => response.data[0])
+const USERS_API = `${BASE_URL}/users`
 
 /** 
  * Sends message from one user to another 
@@ -25,8 +13,8 @@ export const apiGetSingleChat = (uid1, uid2) =>
  * @param message Object with message data inside
  * @returns response with the message object 
 */
-export const apiSendMessage = (message) => 
-  socket.emit('sendMessage', message)
+export const apiSendMessage = (message) =>
+  SocketFactory.getConnection().emit('sendMessage', message)
     .then(response => response.data)
 
 /** 
