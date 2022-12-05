@@ -6,6 +6,7 @@ import React from "react";
 import { UserList } from "./user-list";
 import { useSelector, useDispatch } from 'react-redux'
 import { signup, signin } from "../../redux/userSlice"
+import SocketFactory from "../../socket";
 
 
 
@@ -31,11 +32,12 @@ export const Login = () => {
   const register = async () => {
     try {
       let userCredential = await registerUsingUsername(newUser.username, newUser.password);
+      SocketFactory.init();
       const user = {
-        _id: userCredential.uid, 
+        _id: userCredential.uid,
         username: newUser.username
       }
-      dispatch( signup(user) )
+      dispatch(signup(user))
     } catch (e) {
       console.error(e);
       alert(e.message);
@@ -48,7 +50,8 @@ export const Login = () => {
   const signIn = async () => {
     try {
       const userCredential = await signInUsingUsername(loginUser.username, loginUser.password);
-      dispatch( signin(userCredential.uid) )
+      SocketFactory.init();
+      dispatch(signin(userCredential.uid))
     } catch (e) {
       console.error(e);
       alert(e.message);
@@ -57,8 +60,6 @@ export const Login = () => {
 
   useEffect(findAllUsers, []);
 
-  console.log(user)
-  
   return (
     <div>
       <h1>Register</h1>

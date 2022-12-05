@@ -63,6 +63,19 @@ export const registerUsingUsername = async (username, password) => {
 }
 
 /**
+ * Gets the auth token for the currently logged in user.
+ * 
+ * @returns Promise that resolves to user auth token, null if user is not logged in.
+ */
+export const getIdToken = () => {
+  if (getAuth().currentUser != null) {
+    return getAuth().currentUser.getIdToken(true);
+  } else {
+    return null;
+  }
+}
+
+/**
  * Validates whether the supplied argument is not null
  * and non empty. For checking non-empty it
  * trims the space at start or traling.
