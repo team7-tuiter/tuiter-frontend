@@ -5,7 +5,7 @@ import { getSingleChat } from "../../redux/messageSlice.js"
 import { createChat } from "../../redux/chatSlice"
 import { useSelector, useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
-import { socket } from '../../socket'
+import SocketFactory from '../../socket'
 import { joinRoom } from "../../redux/roomSlice"
 
 const Chats = () => {
@@ -19,7 +19,7 @@ const Chats = () => {
 
   useEffect(() => {
     if (user && user._id) {
-      dispatch( getAllChatsById(user._id) )
+      dispatch(getAllChatsById(user._id))
     }
   }, [dispatch, user])
 
@@ -27,16 +27,16 @@ const Chats = () => {
   const goToNewConversation = (loggedUsername, otherUsername) => {
     if (loggedUsername !== "" && otherUsername !== "") {
       // userId order is made by string comparison 
-      const {userId1, userId2} = loggedUsername > otherUsername ? {userId1: loggedUsername, userId2: otherUsername} : {userId1: otherUsername, userId2: loggedUsername}
+      const { userId1, userId2 } = loggedUsername > otherUsername ? { userId1: loggedUsername, userId2: otherUsername } : { userId1: otherUsername, userId2: loggedUsername }
       const chatObj = {
         userId1,
         userId2,
-        messages : []
+        messages: []
       }
-      dispatch( createChat(chatObj) )
+      dispatch(createChat(chatObj))
       const room = `${userId1} -- ${userId2}`
-      socket.emit("join_room", room)
-      dispatch( joinRoom(room) )
+      SocketFactory.getConnection().emit("join_room", room)
+      dispatch(joinRoom(room))
       navigate("/messages")
     }
   }
@@ -44,22 +44,22 @@ const Chats = () => {
   return (
     <div>
       <h1>Chats</h1>
-    
+
       <button onClick={() => setShowInput(true)}> New Message </button>
 
-      { chats?.messages }
-      
-      {showInput && (
-      <> 
-      <input 
-        type="text" 
-        placeholder="type user..." 
-        onChange={(e) =>
-          setInputUser(e.target.value)}
-        /> 
+      {chats?.messages}
 
-       <button onClick={() => goToNewConversation(user.username, inputUser)} > Go to conversation </button>
-      </>
+      {showInput && (
+        <>
+          <input
+            type="text"
+            placeholder="type user..."
+            onChange={(e) =>
+              setInputUser(e.target.value)}
+          />
+
+          <button onClick={() => goToNewConversation(user.username, inputUser)} > Go to conversation </button>
+        </>
       )}
     </div>
   )

@@ -2,7 +2,7 @@
  * @file implements the message data service
  */
 import axios from "axios"
-import { socket } from '../socket'
+import SocketFactory from '../socket'
 const BASE_URL = "http://localhost:4000"
 const USERS_API = `${BASE_URL}/users`
 
@@ -13,8 +13,8 @@ const USERS_API = `${BASE_URL}/users`
  * @param message Object with message data inside
  * @returns response with the message object 
 */
-export const apiSendMessage = (message) => 
-  socket.emit('sendMessage', message)
+export const apiSendMessage = (message) =>
+  SocketFactory.getConnection().emit('sendMessage', message)
     .then(response => response.data)
 
 /** 

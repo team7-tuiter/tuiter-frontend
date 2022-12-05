@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { sendMessage, receiveMessage } from "../../redux/messageSlice";
-import { socket } from "../../socket";
 import { storage } from "../../firebase";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import SocketFactory from "../../socket";
 
 const Messages = () => {
   const messageList = useSelector((state) => state.messages.messages);
@@ -50,7 +50,7 @@ const Messages = () => {
   };
 
   useEffect(() => {
-    socket.on("receiveMessage", (data) => {
+    SocketFactory.getConnection().on("receiveMessage", (data) => {
       dispatch(receiveMessage(data));
     });
   }, [dispatch]);
