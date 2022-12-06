@@ -1,13 +1,10 @@
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import * as service from "../../services/users-service";
-import { registerUsingUsername, signInUsingUsername } from '../../services/auth-service';
 import React from "react";
 import { UserList } from "./user-list";
 import { useDispatch } from 'react-redux'
 import { signup, signin } from "../../redux/userSlice"
-import SocketFactory from "../../socket";
-
 
 export const Login = () => {
   const [existingUsers, setExistingUsers] = useState([]);
@@ -30,14 +27,7 @@ export const Login = () => {
    */
   const register = async () => {
     try {
-      let userCredential = await registerUsingUsername(newUser.username, newUser.password);
-      SocketFactory.init();
-      const user = {
-        _id: userCredential.uid,
-        username: newUser.username
-      }
-      dispatch(signup(user))
-      navigate("/home")
+      dispatch(signup(newUser));
     } catch (e) {
       console.error(e);
       alert(e.message);
@@ -49,10 +39,7 @@ export const Login = () => {
    */
   const signIn = async () => {
     try {
-      const userCredential = await signInUsingUsername(loginUser.username, loginUser.password);
-      SocketFactory.init();
-      dispatch(signin(userCredential.uid))
-      navigate("/home")
+      dispatch(signin(loginUser));
     } catch (e) {
       console.error(e);
       alert(e.message);

@@ -1,12 +1,15 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { signin } from '../../redux/userSlice'
-import { signInUsingUsername } from "../../services/auth-service";
+import { loginAs } from '../../redux/userSlice'
 
 export const UserList = ({ users, deleteUser }) => {
 
   const dispatch = useDispatch()
+
+  const loginAsSomeoneElse = (username) => {
+    dispatch(loginAs(username));
+  }
 
   return (
     <div className="list-group">
@@ -18,6 +21,7 @@ export const UserList = ({ users, deleteUser }) => {
               className="list-group-item"
               key={user._id}
               to={`/home/${user._id}`}
+              onClick={() => loginAsSomeoneElse(user.username)}
             >
               <span className="fs-3">
                 {user.username}
