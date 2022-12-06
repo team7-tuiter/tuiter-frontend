@@ -17,21 +17,23 @@ const Messages = () => {
   const [message, setMessage] = useState("")
   const room = useSelector((state) => state.room.room)
   const [file, setFile] = useState(null)
+  const user = useSelector((state) => state.user.user)
 
   const send = async () => {
     if (!room) return 
     const [userId1, userId2] = room.split(" -- ")
+    const to = [userId1, userId2].filter(uid => uid !== user._id);
     const payload = {
       room,
       userId1,
       userId2,
       message: {
         id: uuid().slice(0,8),
-        from,
-        to,
+        from: user._id,
+        to: to,
         type : "",
         message,
-        sentOn
+        sentOn: Date.now()
       }
     }
     if (file) {
@@ -46,7 +48,7 @@ const Messages = () => {
       })
     }
     else if (message) {
-      payload.type = "file"
+      payload.type = "string"
       dispatch(sendMessage(payload))
       setMessage("")
     }
@@ -78,7 +80,7 @@ const Messages = () => {
 
       <input
         type="text"
-        value={currentMessage}
+        value={message}
         placeholder="type..."
         onChange={(event) => {
           setMessage(event.target.value);
