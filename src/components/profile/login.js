@@ -16,6 +16,7 @@ export const Login = () => {
   const deleteUser = (uid) =>
     service.deleteUser(uid)
       .then(findAllUsers)
+      
   const findAllUsers = () =>
     service.findAllUsers()
       .then(users => {
