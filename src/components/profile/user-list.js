@@ -14,7 +14,8 @@ export const UserList = ({ users, deleteUser }) => {
         users &&
         users.map(user => {
           return (
-            <Link className="list-group-item"
+            <Link 
+              className="list-group-item"
               key={user._id}
               to={`/home/${user._id}`}
             >

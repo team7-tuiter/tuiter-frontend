@@ -1,21 +1,20 @@
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import * as service from "../../services/users-service";
 import { registerUsingUsername, signInUsingUsername } from '../../services/auth-service';
 import React from "react";
 import { UserList } from "./user-list";
-import { useSelector, useDispatch } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { signup, signin } from "../../redux/userSlice"
 import SocketFactory from "../../socket";
-
 
 
 export const Login = () => {
   const [existingUsers, setExistingUsers] = useState([]);
   const [newUser, setNewUser] = useState({});
   const [loginUser, setLoginUser] = useState({});
-  const user = useSelector((state) => state.user.user)
   const dispatch = useDispatch()
+  const navigate = useNavigate()
 
   const deleteUser = (uid) =>
     service.deleteUser(uid)
@@ -38,6 +37,7 @@ export const Login = () => {
         username: newUser.username
       }
       dispatch(signup(user))
+      navigate("/home")
     } catch (e) {
       console.error(e);
       alert(e.message);
@@ -52,6 +52,7 @@ export const Login = () => {
       const userCredential = await signInUsingUsername(loginUser.username, loginUser.password);
       SocketFactory.init();
       dispatch(signin(userCredential.uid))
+      navigate("/home")
     } catch (e) {
       console.error(e);
       alert(e.message);

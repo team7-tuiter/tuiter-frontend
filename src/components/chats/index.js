@@ -1,3 +1,7 @@
+/**
+ * @file implements Chat component
+ */
+
 import { useEffect, useState } from "react"
 import React from 'react'
 import { getAllChatsById } from "../../redux/chatSlice"
@@ -44,6 +48,7 @@ const Chats = () => {
   return (
     <div>
       <h1>Chats</h1>
+      <h5>Logged in as user: {user.username}</h5>
 
       <button onClick={() => setShowInput(true)}> New Message </button>
 
