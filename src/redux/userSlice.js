@@ -24,7 +24,7 @@ export const signup = createAsyncThunk(
     try {
       const { username, password } = payload;
       const userObj = await registerUsingUsername(username, password);
-      //SocketFactory.init();
+      SocketFactory.init();
       return userObj;
     } catch (e) {
       if (!e.response) throw e
@@ -43,10 +43,11 @@ export const signin = createAsyncThunk(
     try {
       const { username, password } = payload;
       const userObj = await signInUsingUsername(username, password);
-      // SocketFactory.init();
+      console.log("userObj", userObj)
+      //SocketFactory.init();
       return userObj;
     } catch (e) {
-      if (!e.response) throw e
+      if (!e.response) console.log(e)
       return rejectWithValue(e.response)
     }
   });
@@ -62,8 +63,8 @@ export const loginAs = createAsyncThunk(
   async (payload, { rejectWithValue }) => {
     try {
       const userObj = await loginAsUsername(payload);
-      // SocketFactory.init();
       console.log(userObj);
+      SocketFactory.init();
       return userObj;
     } catch (e) {
       if (!e.response) throw e

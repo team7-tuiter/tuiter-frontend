@@ -30,6 +30,7 @@ export const signInUsingUsername = async (username, password) => {
     throw Error("Invalid password");
   }
   try {
+    await getAuth().signOut()
     const response = await axios.post(LOGIN_API, { username, password });
     const { credential, user } = response.data;
     await signInWithCredential(credential);
