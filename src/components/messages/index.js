@@ -12,6 +12,7 @@ const Messages = () => {
   const from = useState("");
   const to = useState("");
   const room = useSelector((state) => state.room.room);
+  const user = useSelector((state) => state.user.user);
 
   const [file, setFile] = useState(null);
 
@@ -57,7 +58,8 @@ const Messages = () => {
 
   return (
     <div>
-      <h1>Messages</h1>
+      <h4>Hello, {user?.username}</h4>
+      <h4>Messages</h4>
 
       {messageList?.message}
 

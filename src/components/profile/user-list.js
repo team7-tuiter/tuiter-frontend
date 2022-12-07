@@ -3,13 +3,14 @@ import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { loginAs } from '../../redux/userSlice'
 
+/**
+ * Not in use.
+ * @returns User list.
+ * @deprecated
+ */
 export const UserList = ({ users, deleteUser }) => {
 
   const dispatch = useDispatch()
-
-  const loginAsSomeoneElse = (username) => {
-    dispatch(loginAs(username));
-  }
 
   return (
     <div className="list-group">
@@ -17,10 +18,8 @@ export const UserList = ({ users, deleteUser }) => {
         users &&
         users.map(user => {
           return (
-            <Link className="list-group-item"
+            <li className="list-group-item"
               key={user._id}
-              to={`/home/${user._id}`}
-              onClick={() => loginAsSomeoneElse(user.username)}
             >
               <span className="fs-3">
                 {user.username}
@@ -32,7 +31,7 @@ export const UserList = ({ users, deleteUser }) => {
               }} className="btn btn-danger fa-pull-right">
                 <i className="fas fa-remove"></i>
               </button>
-            </Link>
+            </li>
           )
         })
       }
