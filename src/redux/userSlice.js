@@ -2,8 +2,7 @@
  * @file implements userSlice
  */
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-import { signInUsingUsername, registerUsingUsername, loginAsUsername } from '../services/auth-service'
-import SocketFactory from "../socket";
+import { createUser, findUserById } from '../services/users-service'
 
 
 // initial state
@@ -22,10 +21,8 @@ export const signup = createAsyncThunk(
   'user/signup',
   async (payload, { rejectWithValue }) => {
     try {
-      const { username, password } = payload;
-      const userObj = await registerUsingUsername(username, password);
-      SocketFactory.init();
-      return userObj;
+      const response = await createUser(payload);
+      return response;
     } catch (e) {
       if (!e.response) throw e
       return rejectWithValue(e.response)
@@ -41,36 +38,13 @@ export const signin = createAsyncThunk(
   'user/signin',
   async (payload, { rejectWithValue }) => {
     try {
-      const { username, password } = payload;
-      const userObj = await signInUsingUsername(username, password);
-      console.log("userObj", userObj)
-      //SocketFactory.init();
-      return userObj;
+      const response = await findUserById(payload);
+      return response;
     } catch (e) {
-      if (!e.response) console.log(e)
-      return rejectWithValue(e.response)
+      if (!e.response) throw e;
+      return rejectWithValue(e.response);
     }
-  });
-
-
-/**
-* Aysn calls for logging user as some one else.
-* @param payload contains the target username 
-* @returns user object or a rejectWithValue oject
-*/
-export const loginAs = createAsyncThunk(
-  'user/loginAs',
-  async (payload, { rejectWithValue }) => {
-    try {
-      const userObj = await loginAsUsername(payload);
-      console.log(userObj);
-      SocketFactory.init();
-      return userObj;
-    } catch (e) {
-      if (!e.response) throw e
-      return rejectWithValue(e.response)
-    }
-  });
+  })
 
 /**
  * User slice with reducers. 
@@ -114,5 +88,3 @@ export const getUserError = (state) => state.user.error
 
 // reducer
 export default userSlice.reducer
-
-
