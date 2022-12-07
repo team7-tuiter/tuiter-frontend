@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import './styles.css';
 import Tuiter from "./components/tuiter";
 import { useDispatch } from "react-redux";
@@ -9,6 +9,7 @@ import { getAuth } from "firebase/auth";
 
 function App() {
   const dispatch = useDispatch();
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     //Check if user is logged in, if it is then save the user data in the store.
@@ -17,11 +18,12 @@ function App() {
         dispatch(signin(fUser.uid));
         SocketFactory.init();
       }
+      setLoading(false);
     });
   }, []);
 
   return (
-    <Tuiter />
+    !loading && <Tuiter />
   );
 }
 

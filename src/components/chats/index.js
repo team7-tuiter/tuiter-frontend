@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import React from 'react'
 import { getAllChatsById } from "../../redux/chatSlice"
 import { getSingleChat } from "../../redux/messageSlice.js"
@@ -8,6 +8,11 @@ import { useNavigate } from 'react-router-dom'
 import SocketFactory from '../../socket'
 import { joinRoom } from "../../redux/roomSlice"
 
+const getDimensions = () => {
+  const { innerWidth: width, innerHeight: height } = window;
+  return { width, height };
+}
+
 const Chats = () => {
 
   const navigate = useNavigate()
@@ -16,6 +21,8 @@ const Chats = () => {
   const user = useSelector((state) => state.user.user)
   const [showInput, setShowInput] = useState(false)
   const [inputUser, setInputUser] = useState("")
+  const [dimen, setDimen] = useState(getDimensions());
+  const inputwrap = useRef();
 
   const chats = [
 
@@ -241,12 +248,34 @@ const Chats = () => {
     },
   ]
 
+  const updateDimens = () => {
+    let dimensions = getDimensions();
+    if (inputwrap.current) {
+      const height = inputwrap.current.offsetHeight;
+      dimensions = {
+        height: dimensions.height - height - 25, //-25 is buffer
+        width: dimensions.width,
+      }
+    }
+    setDimen(dimensions);
+  }
+
   useEffect(() => {
     if (user && user._id) {
       dispatch(getAllChatsById(user._id))
     }
+    updateDimens();
+    window.addEventListener('resize', updateDimens);
+    return () => window.removeEventListener('resize', updateDimens);
   }, [dispatch, user])
 
+
+  const makeInputVisible = () => {
+    setShowInput(true);
+    setTimeout(() => {
+      updateDimens();
+    }, 1);
+  }
 
   const goToNewConversation = (otherUsername) => {
     const loggedUsername = user.username;
@@ -283,33 +312,39 @@ const Chats = () => {
           <div className="container p-0">
             <div className="row">
               <div className="col-5">
-                <div className="d-flex flex-row">
-                  <div className="flex-fill">
-                    <h4>Chats (Hello, {user.username})</h4>
-                  </div>
-                  <div>
-                    <button className="btn btn-sm btn-primary rounded-pill" onClick={() => setShowInput(true)}><i class="fa-solid fa-message-plus"></i> New Message </button>
+                <div ref={inputwrap}>
+                  <div className="mb-3">
+                    <div className="d-flex flex-row">
+                      <div className="flex-fill">
+                        <h4 className="m-0">Chats (Hello, {user.username})</h4>
+                      </div>
+                      <div>
+                        <button className="btn btn-sm btn-primary rounded-pill" onClick={makeInputVisible}><i class="fa-solid fa-message-plus"></i> New Message </button>
+                      </div>
+                    </div>
+                    {showInput && (
+                      <div class="input-group mt-3">
+                        <input type="text" class="form-control" placeholder="Search user ..." onChange={(e) =>
+                          setInputUser(e.target.value)} />
+                        <button class="btn btn-primary" type="button" id="button-addon1" onClick={() => goToNewConversation(inputUser)} >
+                          <i className="fa fa-arrow-right"></i>
+                        </button>
+                      </div>
+                    )}
                   </div>
                 </div>
-                {showInput && (
-                  <div class="input-group mt-3">
-                    <input type="text" class="form-control" placeholder="Search user ..." onChange={(e) =>
-                      setInputUser(e.target.value)} />
-                    <button class="btn btn-primary" type="button" id="button-addon1" onClick={() => goToNewConversation(inputUser)} >
-                      <i className="fa fa-arrow-right"></i>
-                    </button>
-                  </div>
-                )}
-                <ul class="list-group mt-3">
-                  {chats.map((chat, index) => {
-                    return (
-                      <li class="list-group-item chat-hover" key={`chatid-${index}`} onClick={() => goToExistingConversation(chat.from._id)}>
-                        <p className="m-0"><b>{chat.from.username}</b><small className="text-muted"> - {formatDate(chat.sentOn)}</small></p>
-                        <p>{chat.lastMessage}</p>
-                      </li>
-                    )
-                  })}
-                </ul>
+                <div style={{ maxHeight: dimen.height, height: dimen.height, overflowY: "scroll" }}>
+                  <ul class="list-group">
+                    {chats.map((chat, index) => {
+                      return (
+                        <li class="list-group-item chat-hover" key={`chatid-${index}`} onClick={() => goToExistingConversation(chat.from._id)}>
+                          <p className="m-0"><b>{chat.from.username}</b><small className="text-muted"> - {formatDate(chat.sentOn)}</small></p>
+                          <p>{chat.lastMessage}</p>
+                        </li>
+                      )
+                    })}
+                  </ul>
+                </div>
               </div>
               <div className="col-7">
                 here will go the message component
