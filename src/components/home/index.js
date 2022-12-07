@@ -2,10 +2,10 @@ import React, { useCallback } from "react";
 import Tuits from "../tuits";
 import * as service from "../../services/tuits-service";
 import {useEffect, useState} from "react";
-import {useParams} from "react-router-dom";
+import { useSelector } from "react-redux"
 
 const Home = () => {
-  const {uid} = useParams();
+  const uid = useSelector((state) => state.user.user?._id)
   const [tuits, setTuits] = useState([]);
   const [tuit, setTuit] = useState('');
   const userId = uid;
@@ -22,7 +22,7 @@ const Home = () => {
 
   useEffect(() => {
     findTuits()
-  }, [])
+  }, [uid])
 
   const createTuit = async () => { 
     await service.createTuit({tuit: tuit, postedBy: userId})

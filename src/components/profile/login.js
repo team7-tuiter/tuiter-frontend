@@ -24,7 +24,7 @@ export const Login = () => {
       }
       dispatch(signup(user));
       await SocketFactory.init();
-      navigate("/messages");
+      navigate("/home");
     } catch (e) {
       console.error(e);
       alert(e.message);
@@ -39,7 +39,7 @@ export const Login = () => {
       const userCredential = await signInUsingUsername(loginUser.username, loginUser.password);
       dispatch(signin(userCredential.uid));
       await SocketFactory.init();
-      navigate("/messages");
+      navigate("/home");
     } catch (e) {
       console.error(e);
       alert(e.message);
