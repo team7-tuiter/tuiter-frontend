@@ -76,6 +76,14 @@ export const getIdToken = () => {
 }
 
 /**
+ * Returns the current logged in user.
+ * @returns  Firebase User, if not logged in then returns null.
+ */
+export const getFirbaseUser = () => {
+  return getAuth().currentUser;
+}
+
+/**
  * Validates whether the supplied argument is not null
  * and non empty. For checking non-empty it
  * trims the space at start or traling.

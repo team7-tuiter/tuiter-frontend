@@ -14,7 +14,7 @@ function Tuiter() {
           <div className="col-xl-3 col-md-1">
             <Navigation />
           </div>
-          <div className="col-xl-9 col-md-11">
+          <div className="col-xl-9 col-md-11 pt-2">
             <Routes>
               <Route path="/*" element={<TwoColumnLayout />} />
               <Route exact path="/messages" element={<Messages />} />
