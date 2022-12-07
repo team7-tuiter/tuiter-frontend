@@ -7,6 +7,9 @@ import { useSelector, useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import SocketFactory from '../../socket'
 import { joinRoom } from "../../redux/roomSlice"
+import { AsyncTypeahead, Highlighter } from "react-bootstrap-typeahead"
+import { searchUser } from "../../services/users-service"
+import Messages from "../messages"
 
 const getDimensions = () => {
   const { innerWidth: width, innerHeight: height } = window;
@@ -20,7 +23,9 @@ const Chats = () => {
   //const chats = useSelector((state) => state.chats.chats)
   const user = useSelector((state) => state.user.user)
   const [showInput, setShowInput] = useState(false)
-  const [inputUser, setInputUser] = useState("")
+  const [loading, setLoading] = useState(false)
+  const [selctedUser, setSelectedUser] = useState("")
+  const [userList, setUserList] = useState([])
   const [dimen, setDimen] = useState(getDimensions());
   const inputwrap = useRef();
 
@@ -277,6 +282,20 @@ const Chats = () => {
     }, 1);
   }
 
+  /**
+   * Searches for the user in the backend.
+   * @param {*} inputValue The input value from typeahead 
+   */
+  const lookForUser = (inputValue) => {
+    if (inputValue) {
+      setLoading(true);
+      searchUser(inputValue).then(results => {
+        setUserList(results);
+        setLoading(false);
+      });
+    }
+  }
+
   const goToNewConversation = (otherUsername) => {
     const loggedUsername = user.username;
     if (loggedUsername !== "" && otherUsername !== "") {
@@ -295,8 +314,8 @@ const Chats = () => {
     }
   }
 
-  const goToExistingConversation = (otherUserId) => {
-
+  const goToExistingConversation = (selectedUser) => {
+    setSelectedUser(selctedUser);
   }
 
   const formatDate = (sentOn) => {
@@ -324,8 +343,18 @@ const Chats = () => {
                     </div>
                     {showInput && (
                       <div class="input-group mt-3">
-                        <input type="text" class="form-control" placeholder="Search user ..." onChange={(e) =>
-                          setInputUser(e.target.value)} />
+                        <AsyncTypeahead
+                          id="search-user-typeahead"
+                          onChange={goToExistingConversation}
+                          isLoading={loading}
+                          onSearch={lookForUser}
+                          placeholder="Search user ..."
+                          options={userList}
+                          labelKey={option => `${option.username}`}
+                          minLength={1}
+                        />
+                        {/* <input type="text" class="form-control" placeholder="Search user ..." onChange={(e) =>
+                          setInputUser(e.target.value)} /> */}
                         <button class="btn btn-primary" type="button" id="button-addon1" onClick={() => goToNewConversation(inputUser)} >
                           <i className="fa fa-arrow-right"></i>
                         </button>
@@ -347,7 +376,9 @@ const Chats = () => {
                 </div>
               </div>
               <div className="col-7">
-                here will go the message component
+                {selctedUser && (
+                  <Messages target="" />
+                )}
               </div>
             </div>
           </div>

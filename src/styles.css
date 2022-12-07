@@ -60,3 +60,7 @@ body {
 .chat-hover:hover .text-muted {
     color: white !important;
 }
+
+.input-group .rbt {
+    flex: 1
+}

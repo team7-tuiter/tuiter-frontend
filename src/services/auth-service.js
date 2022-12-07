@@ -93,7 +93,7 @@ export const getFirbaseUser = () => {
  * @return {Boolean} True means valid else False
  */
 export const isValid = (data) => {
-  if (!data || data.trim().length == 0) {
+  if (!data || data.trim().length === 0) {
     return false;
   }
   return true;

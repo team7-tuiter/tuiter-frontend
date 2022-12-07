@@ -29,6 +29,10 @@ export const findUserByCredentials = (credentials) =>
   axios.post(`${LOGIN_API}`, credentials)
     .then(response => response.data);
 
+export const searchUser = (query) =>
+  axios.get(`${USERS_API}/search/${query}`)
+    .then(response => response.data);
+
 const service = {
   findAllUsers
 }
