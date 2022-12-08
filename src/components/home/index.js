@@ -10,8 +10,8 @@ const Home = () => {
   const [tuit, setTuit] = useState('');
   const userId = uid;
 
-  const findTuits = useCallback( async () => {
-    if(uid) {
+  const findTuits = useCallback(async () => {
+    if (uid) {
       await service.findTuitByUser(uid)
         .then(tuits => setTuits(tuits))
     } else {
@@ -24,17 +24,17 @@ const Home = () => {
     findTuits()
   }, [uid])
 
-  const createTuit = async () => { 
-    await service.createTuit({tuit: tuit, postedBy: userId})
+  const createTuit = async () => {
+    await service.createTuit({ tuit: tuit, postedBy: userId })
     await findTuits()
   }
-    
-  const deleteTuit = async (tid) => { 
+
+  const deleteTuit = async (tid) => {
     await service.deleteTuit(tid)
     await findTuits()
   }
-    
-  return(
+
+  return (
     <div className="ttr-home">
       <div className="border border-bottom-0">
         <h4 className="fw-bold p-2">Home Screen</h4>
@@ -43,12 +43,12 @@ const Home = () => {
           <div className="d-flex">
             <div className="p-2">
               <img className="ttr-width-50px rounded-circle"
-                   src="../images/nasa-logo.jpg"/>
+                src="/images/nasa-logo.jpg" />
             </div>
             <div className="p-2 w-100">
               <textarea
-                  onChange={(e) =>
-                      setTuit(e.target.value)}
+                onChange={(e) =>
+                  setTuit(e.target.value)}
                 placeholder="What's happening?"
                 className="w-100 border-0"></textarea>
               <div className="row">
@@ -62,7 +62,7 @@ const Home = () => {
                 </div>
                 <div className="col-2">
                   <a onClick={createTuit}
-                     className={`btn btn-primary rounded-pill fa-pull-right
+                    className={`btn btn-primary rounded-pill fa-pull-right
                                   fw-bold ps-4 pe-4`}>
                     Tuit
                   </a>
@@ -72,7 +72,7 @@ const Home = () => {
           </div>
         }
       </div>
-      <Tuits tuits={tuits} deleteTuit={deleteTuit}/>
+      <Tuits tuits={tuits} deleteTuit={deleteTuit} />
     </div>
   );
 };
