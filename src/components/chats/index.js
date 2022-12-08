@@ -1,3 +1,7 @@
+/**
+ * @file implements Chat component
+ */
+ 
 import { useEffect, useRef, useState } from "react"
 import React from 'react'
 import { getAllChatsById } from "../../redux/chatSlice"

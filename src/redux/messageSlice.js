@@ -42,9 +42,9 @@ const initialState = {
 export const sendMessage = createAsyncThunk(
   'chats/sendMessage', 
   async (payload, { rejectWithValue }) => {
-    const { from, to, message } = payload
     try {
-      const response = await apiSendMessage(from, to, message)
+      const response = await apiSendMessage(payload)
+      console.log("response in sendMessage in messageSlice", response)
       return response.data
     } catch(e) {
       if (!e.response) throw e

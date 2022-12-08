@@ -17,6 +17,7 @@ const getSocket = async () => {
   });
 }
 
+
 /**
  * A socket factory class that holds the socket object
  * using singleton pattern.
@@ -27,6 +28,11 @@ class SocketFactory {
     socketConnection = await getSocket();
     return socketConnection;
   }
+
+  static disconnectSocket = async () => {
+    socketConnection.disconnect()
+  }
+
   static getConnection = () => {
     if (socketConnection) {
       return socketConnection;
