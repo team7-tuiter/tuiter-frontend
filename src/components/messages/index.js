@@ -30,8 +30,8 @@ const Messages = () => {
       messages: {
         id: uuid().slice(0,8),
         from: user._id,
-        to: to,
-        type : "",
+        to: to[0],
+        type : "STRING",
         message,
         sentOn: Date.now()
       }
@@ -48,23 +48,21 @@ const Messages = () => {
       })
     }
     else if (message) {
-      payload.type = "string"
       dispatch(sendMessage(payload))
       setMessage("")
     }
   }
 
   useEffect(() => {
-    SocketFactory.getConnection().on("receiveMessage", (data) => {
+    SocketFactory.getConnection().on("receive_message", (data) => {
       dispatch(receiveMessage(data));
     })
   }, [dispatch])
 
+  console.log("messageList", messageList)
   return (
     <div>
       <h4>Messages {user?.username} </h4>
-
-      {messageList?.message}
 
       <span>
         <label for="fileInput">
@@ -90,6 +88,15 @@ const Messages = () => {
         }}
       />
       <button onClick={send}> Send Message </button>
+
+      {messageList.map((message, i) => {
+        if (i === 0) return
+        return (
+          <div>
+          <li> {message.message} </li>
+        </div>
+        )
+      })}
     </div>
   )
 }

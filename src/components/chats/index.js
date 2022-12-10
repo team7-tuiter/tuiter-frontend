@@ -1,7 +1,7 @@
 /**
  * @file implements Chat component
  */
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useRef, useState, useCallback } from "react"
 import React from 'react'
 import { getAllMessagesInSingleChat } from "../../redux/messageSlice"
 import { getLastMessagesFromAllChats } from "../../redux/chatSlice"
@@ -19,6 +19,14 @@ const getDimensions = () => {
   return { width, height };
 }
 
+const orderUserIds = (uid1, uid2) => {
+  // userId order is made by string comparison 
+  const { userId1, userId2 } = uid1 > uid2 ? 
+    { userId1: uid1, userId2: uid2 } : 
+    { userId1: uid2, userId2: uid1 }
+  return { userId1, userId2 }
+}
+
 const Chats = () => {
 
   const dispatch = useDispatch()
@@ -30,6 +38,8 @@ const Chats = () => {
   const [userList, setUserList] = useState([])
   const [dimen, setDimen] = useState(getDimensions());
   const inputwrap = useRef();
+  const messages = useSelector((state) => state.messages.messages)
+  const [isClicked, setIsClicked] = useState(false)
 
   const updateDimens = () => {
     let dimensions = getDimensions();
@@ -43,6 +53,17 @@ const Chats = () => {
     setDimen(dimensions);
   }
 
+  /**
+  * Find if the user already has an existing conversation with selectedUser
+  * @param user selectedUser
+  */
+  const hasExistingChat = useCallback((selectedUser) => {
+    return chats.some(chat => chat?.userId1?.username === selectedUser?.username || chat?.userId2?.username === selectedUser?.username)
+  }, [chats])
+
+  /**
+   * Called when user changes (usually when page first renders)
+   */
   useEffect(() => {
     if (user && user._id) {
       dispatch(getLastMessagesFromAllChats(user._id))
@@ -53,21 +74,22 @@ const Chats = () => {
   }, [dispatch, user])
 
 
+  /**
+   * Called when selectedUser, user or isClicked change
+   */
   useEffect(() => {
-    if (!user || !selectedUser) return
+    if (!user || !selectedUser || !user._id || !selectedUser._id) return
     const loggedUserId = user._id
     const selectedUserId = selectedUser._id
-    // userId order is made by string comparison 
-    const { userId1, userId2 } = loggedUserId > selectedUserId ? 
-      { userId1: loggedUserId, userId2: selectedUserId } : 
-      { userId1: selectedUserId, userId2: loggedUserId }
-
+    // order user ids
+    const { userId1, userId2 } = orderUserIds(loggedUserId, selectedUserId)
     // if the user already has an existing conversation with the selected user
-    if (hasExistingChat()) {
+    if (hasExistingChat(selectedUser)) {
       // populate the chat with messages
-      dispatch(getAllMessagesInSingleChat(userId1, userId2))
+      dispatch(getAllMessagesInSingleChat({userId1, userId2}))
       // create a new chat 
     } else {
+      // create an empty chat
       const chatObj = {
         userId1,
         userId2,
@@ -85,24 +107,12 @@ const Chats = () => {
     const room = `${userId1} -- ${userId2}`
     SocketFactory.getConnection().emit("join_room", room)
     dispatch(joinRoom(room))
-  }, [selectedUser])
+  }, [selectedUser, dispatch, hasExistingChat, user, isClicked])
 
   // sets the selected user in state 
   const goToConversation = (selectedUser) => {
-    console.log("selectedUser", selectedUser)
     if (!Array.isArray(selectedUser)) return
     setSelectedUser(selectedUser[0])
-  }
-
-  /**
-   * Find if the user already has an existing conversation with selectedUser
-   * @param user selectedUser
-   */
-  const hasExistingChat = () => {
-    chats.map((chat) => {
-      if (chat?.from?._id === selectedUser?._id) return true
-    })
-    return false
   }
 
 
@@ -134,6 +144,7 @@ const Chats = () => {
     return formattedDate;
   }
 
+  console.log("messages", messages)
   return (
     <div>
       {
@@ -174,8 +185,9 @@ const Chats = () => {
                   <ul className="list-group">
                     {!!chats.length && chats.map((chat, index) => {
                       const otherUsername = [chat?.userId1?.username, chat?.userId2?.username].filter(uname => uname !== user.username)
+                      const otherUser = [chat?.userId1, chat?.userId2].filter(userObj => userObj.username !== user.username)
                       return (
-                        <li className="list-group-item chat-hover" key={`chatid-${index}`} onClick={() => goToConversation(chat?.messages[0]?.from?._id)}>
+                        <li className="list-group-item chat-hover" key={`chatid-${index}`} onClick={() => {goToConversation(otherUser); setIsClicked(!isClicked)}}>
                           <p className="m-0"><b>{otherUsername}</b><small className="text-muted"> - {formatDate(chat?.messages[0]?.sentOn)}</small></p>
                           <p>{chat?.messages[0]?.message}</p>
                         </li>

@@ -14,7 +14,7 @@ const USERS_API = `${BASE_URL}/users`
  * @returns response with the message object 
 */
 export const apiSendMessage = (message) =>
-  SocketFactory.getConnection().emit('sendMessage', message)
+  SocketFactory.getConnection().emit('send_message', message)
     .then(response => response.data)
 
 /** 
@@ -35,4 +35,4 @@ export const apiDeleteMessage = (uid1, uid2) =>
 */
 export const apiGetAllMessagesInSingleChat = (uid1, uid2) => 
   axios.get(`${USERS_API}/${uid1}/users/${uid2}/chat`)
-    .then(response => response.data[0])
+    .then(response => response.data)

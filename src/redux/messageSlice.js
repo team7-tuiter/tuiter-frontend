@@ -22,12 +22,12 @@ const initialState = {
  * @returns chat object or a rejectWithValue oject
  */
  export const getAllMessagesInSingleChat = createAsyncThunk(
-  'chats/getAllMessagesInSingleChat', 
+  'messages/getAllMessagesInSingleChat', 
   async (payload, { rejectWithValue }) => {
     const { userId1, userId2 } = payload
     try {
       const response = await apiGetAllMessagesInSingleChat(userId1, userId2)
-      return response.data
+      return response[0].messages
     } catch(e) {
       if (!e.response) throw e
       return rejectWithValue(e.response.data)
@@ -40,11 +40,10 @@ const initialState = {
  * @returns message object or a rejectWithValue oject
  */
 export const sendMessage = createAsyncThunk(
-  'chats/sendMessage', 
+  'messages/sendMessage', 
   async (payload, { rejectWithValue }) => {
     try {
       const response = await apiSendMessage(payload)
-      console.log("response in sendMessage in messageSlice", response)
       return response.data
     } catch(e) {
       if (!e.response) throw e
@@ -58,7 +57,7 @@ export const sendMessage = createAsyncThunk(
  * @returns delete status or rejectWithValue object
  */
 export const deleteMessage = createAsyncThunk(
-  'chats/deleteMessage', 
+  'messages/deleteMessage', 
   async (payload, { rejectWithValue }) => {
     const { from, to } = payload
     try {
@@ -71,6 +70,7 @@ export const deleteMessage = createAsyncThunk(
 })
 
 
+
 /**
  * Message slice with reducers. 
  */
@@ -79,17 +79,18 @@ export const messageSlice = createSlice({
   initialState,
   reducers: {
     receiveMessage: (state, action) => {
-      state.messages.push(action.payload)
+      console.log("action.payload", action.payload)
+      state.messages.push(action.payload?.messages)
     }
   },
   extraReducers: {
-    // getSingleChat
+    // getAllMessagesInSingleChat
     [getAllMessagesInSingleChat.pending] : (state, action) => {
       state.status = 'loading'
     },
     [getAllMessagesInSingleChat.fulfilled] : (state, action) => {
       state.status = 'succeded'
-      state.chats = action.payload
+      state.messages = action.payload
     },
     [getAllMessagesInSingleChat.rejected] : (state, action) => {
       state.status = 'failed'
@@ -118,11 +119,11 @@ export const messageSlice = createSlice({
     [deleteMessage.rejected] : (state, action) => {
       state.status = 'failed'
       state.error = action.error.message
-    }
+    },
   }
 })
 
-// action selector
+//action selector
 export const { receiveMessage } = messageSlice.actions
 
 // state selector
