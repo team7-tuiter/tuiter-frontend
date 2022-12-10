@@ -27,7 +27,7 @@ const Messages = () => {
       room,
       userId1,
       userId2,
-      message: {
+      messages: {
         id: uuid().slice(0,8),
         from: user._id,
         to: to,
@@ -40,8 +40,8 @@ const Messages = () => {
       const fileref = ref(storage, `static/${Date.now()}`)
       uploadBytes(fileref, file).then((res) => {
         getDownloadURL(res.ref).then((url) => {
-          payload.message = url
-          payload.type = "file"
+          payload.messages.message = url
+          payload.messages.type = "IMAGE"
           dispatch(sendMessage(payload));
           setFile(null);
         })

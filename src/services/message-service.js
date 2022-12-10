@@ -26,3 +26,13 @@ export const apiSendMessage = (message) =>
 export const apiDeleteMessage = (uid1, uid2) =>
   axios.delete(`${USERS_API}/${uid1}/users/${uid2}/messages`)
     .then(response => response.status)
+
+/** 
+ * Retrieves a chat between two users
+ * @param uid1 String user id 1
+ * @param uid2 String user id 2
+ * @returns response with the chat object
+*/
+export const apiGetAllMessagesInSingleChat = (uid1, uid2) => 
+  axios.get(`${USERS_API}/${uid1}/users/${uid2}/chat`)
+    .then(response => response.data[0])
