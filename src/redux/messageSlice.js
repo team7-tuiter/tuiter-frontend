@@ -7,7 +7,7 @@ import {
   apiDeleteMessage
 } from '../services/message-service'
 
-import { apiGetSingleChat } from '../services/chat-service'
+import { apiGetAllMessagesInSingleChat } from '../services/message-service'
 
 // initial state
 const initialState = {
@@ -17,17 +17,17 @@ const initialState = {
 }
 
 /**
- * Async thunk calls the service function apiGetSingleChat
+ * Async thunk calls the service function apiGetAllMessagesInSingleChat
  * @param payload contains the from and to user ids 
  * @returns chat object or a rejectWithValue oject
  */
- export const getSingleChat = createAsyncThunk(
-  'chats/getSingleChat', 
+ export const getAllMessagesInSingleChat = createAsyncThunk(
+  'messages/getAllMessagesInSingleChat', 
   async (payload, { rejectWithValue }) => {
-    const { from, to } = payload
+    const { userId1, userId2 } = payload
     try {
-      const response = await apiGetSingleChat(from, to)
-      return response.data[0]
+      const response = await apiGetAllMessagesInSingleChat(userId1, userId2)
+      return response[0].messages
     } catch(e) {
       if (!e.response) throw e
       return rejectWithValue(e.response.data)
@@ -40,12 +40,11 @@ const initialState = {
  * @returns message object or a rejectWithValue oject
  */
 export const sendMessage = createAsyncThunk(
-  'chats/sendMessage', 
+  'messages/sendMessage', 
   async (payload, { rejectWithValue }) => {
     try {
-      const response = await apiSendMessage(payload)
-      console.log("response in sendMessage in messageSlice", response)
-      return response.data
+      await apiSendMessage(payload)
+      return payload.messages
     } catch(e) {
       if (!e.response) throw e
       return rejectWithValue(e.response.data)
@@ -58,7 +57,7 @@ export const sendMessage = createAsyncThunk(
  * @returns delete status or rejectWithValue object
  */
 export const deleteMessage = createAsyncThunk(
-  'chats/deleteMessage', 
+  'messages/deleteMessage', 
   async (payload, { rejectWithValue }) => {
     const { from, to } = payload
     try {
@@ -71,6 +70,7 @@ export const deleteMessage = createAsyncThunk(
 })
 
 
+
 /**
  * Message slice with reducers. 
  */
@@ -79,19 +79,19 @@ export const messageSlice = createSlice({
   initialState,
   reducers: {
     receiveMessage: (state, action) => {
-      state.messages.push(action.payload)
+      state.messages.push(action.payload?.messages)
     }
   },
   extraReducers: {
-    // getSingleChat
-    [getSingleChat.pending] : (state, action) => {
+    // getAllMessagesInSingleChat
+    [getAllMessagesInSingleChat.pending] : (state, action) => {
       state.status = 'loading'
     },
-    [getSingleChat.fulfilled] : (state, action) => {
+    [getAllMessagesInSingleChat.fulfilled] : (state, action) => {
       state.status = 'succeded'
-      state.chats = action.payload
+      state.messages = action.payload
     },
-    [getSingleChat.rejected] : (state, action) => {
+    [getAllMessagesInSingleChat.rejected] : (state, action) => {
       state.status = 'failed'
       state.error = action.error.message
     },
@@ -118,11 +118,11 @@ export const messageSlice = createSlice({
     [deleteMessage.rejected] : (state, action) => {
       state.status = 'failed'
       state.error = action.error.message
-    }
+    },
   }
 })
 
-// action selector
+//action selector
 export const { receiveMessage } = messageSlice.actions
 
 // state selector

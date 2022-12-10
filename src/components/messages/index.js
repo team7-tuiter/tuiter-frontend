@@ -27,11 +27,11 @@ const Messages = () => {
       room,
       userId1,
       userId2,
-      message: {
+      messages: {
         id: uuid().slice(0,8),
         from: user._id,
-        to: to,
-        type : "",
+        to: to[0],
+        type : "STRING",
         message,
         sentOn: Date.now()
       }
@@ -40,22 +40,21 @@ const Messages = () => {
       const fileref = ref(storage, `static/${Date.now()}`)
       uploadBytes(fileref, file).then((res) => {
         getDownloadURL(res.ref).then((url) => {
-          payload.message = url
-          payload.type = "file"
+          payload.messages.message = url
+          payload.messages.type = "IMAGE"
           dispatch(sendMessage(payload));
           setFile(null);
         })
       })
     }
     else if (message) {
-      payload.type = "string"
       dispatch(sendMessage(payload))
       setMessage("")
     }
   }
 
   useEffect(() => {
-    SocketFactory.getConnection().on("receiveMessage", (data) => {
+    SocketFactory.getConnection().on("receive_message", (data) => {
       dispatch(receiveMessage(data));
     })
   }, [dispatch])
@@ -63,8 +62,6 @@ const Messages = () => {
   return (
     <div>
       <h4>Messages {user?.username} </h4>
-
-      {messageList?.message}
 
       <span>
         <label for="fileInput">
@@ -90,6 +87,15 @@ const Messages = () => {
         }}
       />
       <button onClick={send}> Send Message </button>
+
+      {messageList.map((message, i) => {
+        if (i === 0) return
+        return (
+          <div key={i.toString()}>
+          <li> {message.message} </li>
+        </div>
+        )
+      })}
     </div>
   )
 }
