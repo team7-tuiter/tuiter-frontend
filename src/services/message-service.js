@@ -15,7 +15,6 @@ const USERS_API = `${BASE_URL}/users`
 */
 export const apiSendMessage = (message) =>
   SocketFactory.getConnection().emit('send_message', message)
-    .then(response => response.data)
 
 /** 
  * Deletes a message in a conversation between two users

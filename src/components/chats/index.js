@@ -143,8 +143,7 @@ const Chats = () => {
     const formattedDate = `${postedOn.getFullYear()}/${postedOn.getMonth()}/${postedOn.getDay()}`;
     return formattedDate;
   }
-
-  console.log("messages", messages)
+  
   return (
     <div>
       {

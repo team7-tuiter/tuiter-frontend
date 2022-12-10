@@ -43,8 +43,8 @@ export const sendMessage = createAsyncThunk(
   'messages/sendMessage', 
   async (payload, { rejectWithValue }) => {
     try {
-      const response = await apiSendMessage(payload)
-      return response.data
+      await apiSendMessage(payload)
+      return payload.messages
     } catch(e) {
       if (!e.response) throw e
       return rejectWithValue(e.response.data)
@@ -79,7 +79,6 @@ export const messageSlice = createSlice({
   initialState,
   reducers: {
     receiveMessage: (state, action) => {
-      console.log("action.payload", action.payload)
       state.messages.push(action.payload?.messages)
     }
   },

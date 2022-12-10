@@ -59,7 +59,6 @@ const Messages = () => {
     })
   }, [dispatch])
 
-  console.log("messageList", messageList)
   return (
     <div>
       <h4>Messages {user?.username} </h4>
@@ -92,7 +91,7 @@ const Messages = () => {
       {messageList.map((message, i) => {
         if (i === 0) return
         return (
-          <div>
+          <div key={i.toString()}>
           <li> {message.message} </li>
         </div>
         )
