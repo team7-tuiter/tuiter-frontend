@@ -18,10 +18,8 @@ const Messages = () => {
   const room = useSelector((state) => state.room.room);
   const [file, setFile] = useState(null);
   const user = useSelector((state) => state.user.user);
-  const chats = useSelector((state) => state.chats.chats);
 
   const send = async () => {
-    console.log(file.type);
     if (!room) return;
     const [userId1, userId2] = room.split(" -- ");
     const to = [userId1, userId2].filter((uid) => uid !== user._id)[0];
@@ -43,19 +41,9 @@ const Messages = () => {
       const upload = await uploadBytes(fileref, file);
       payload.messages.message = await getDownloadURL(upload.ref);
       payload.messages.type = file.type.split("/")[0].toUpperCase();
-      console.log(payload);
       dispatch(sendMessage(payload));
       setFile(null);
-      // uploadBytes(fileref, file).then((res) => {
-      //   getDownloadURL(res.ref).then((url) => {
-      //     payload.messages.message = url
-      //     payload.messages.type = "IMAGE"
-      //     dispatch(sendMessage(payload));
-      //     setFile(null);
-      //   })
-      // })
-    }
-    if (message) {
+    } else if (message) {
       dispatch(sendMessage(payload));
       setMessage("");
     }
