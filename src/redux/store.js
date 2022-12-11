@@ -4,7 +4,7 @@
 
 import { configureStore } from '@reduxjs/toolkit'
 import chatReducer from "./chatSlice"
-import messageReducer from "./chatSlice"
+import messageReducer from "./messageSlice"
 import userReducer from "./userSlice"
 import roomReducer from "./roomSlice"
 
