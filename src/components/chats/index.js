@@ -40,6 +40,8 @@ const Chats = () => {
   const inputwrap = useRef();
   const messages = useSelector((state) => state.messages.messages)
   const [isClicked, setIsClicked] = useState(false)
+  const [time, setTime] = useState(Date.now());
+
 
   const updateDimens = () => {
     let dimensions = getDimensions();
@@ -108,13 +110,11 @@ const Chats = () => {
     SocketFactory.getConnection().emit("join_room", room)
     dispatch(joinRoom(room))
   }, [selectedUser, dispatch, hasExistingChat, user, isClicked])
-
+  
   // sets the selected user in state 
-  const goToConversation = (selectedUser) => {
-    if (!Array.isArray(selectedUser)) return
-    setSelectedUser(selectedUser[0])
+  const handleChange = (selectedUser) => {
+    setSelectedUser(selectedUser)
   }
-
 
   const makeInputVisible = () => {
     setShowInput(true);
@@ -144,6 +144,7 @@ const Chats = () => {
     return formattedDate;
   }
   
+  // console.log("chats", chats)
   return (
     <div>
       {
@@ -165,7 +166,7 @@ const Chats = () => {
                       <div className="input-group mt-3">
                         <AsyncTypeahead
                           id="search-user-typeahead"
-                          onChange={goToConversation}
+                          onChange={(value) => handleChange(value[0])}
                           isLoading={loading}
                           onSearch={lookForUser}
                           placeholder="Search user ..."
@@ -173,7 +174,7 @@ const Chats = () => {
                           labelKey={option => `${option.username}`}
                           minLength={1}
                         />
-                        <button className="btn btn-primary" type="button" id="button-addon1" onClick={() => goToConversation(selectedUser)} >
+                        <button className="btn btn-primary" type="button" id="button-addon1" onClick={() => handleChange(selectedUser)} >
                           <i className="fa fa-arrow-right"></i>
                         </button>
                       </div>
@@ -183,11 +184,10 @@ const Chats = () => {
                 <div style={{ maxHeight: dimen.height, height: dimen.height, overflowY: "scroll" }}>
                   <ul className="list-group">
                     {!!chats.length && chats.map((chat, index) => {
-                      const otherUsername = [chat?.userId1?.username, chat?.userId2?.username].filter(uname => uname !== user.username)
-                      const otherUser = [chat?.userId1, chat?.userId2].filter(userObj => userObj.username !== user.username)
+                      const otherUser = [chat?.userId1, chat?.userId2].filter(userObj => userObj.username !== user.username)[0]
                       return (
-                        <li className="list-group-item chat-hover" key={`chatid-${index}`} onClick={() => {goToConversation(otherUser); setIsClicked(!isClicked)}}>
-                          <p className="m-0"><b>{otherUsername}</b><small className="text-muted"> - {formatDate(chat?.messages[0]?.sentOn)}</small></p>
+                        <li className="list-group-item chat-hover" key={`chatid-${index}`} onClick={() => {handleChange(otherUser); setIsClicked(!isClicked)}}>
+                          <p className="m-0"><b>{otherUser.username}</b><small className="text-muted"> - {formatDate(chat?.messages[0]?.sentOn)}</small></p>
                           <p>{chat?.messages[0]?.message}</p>
                         </li>
                       )
