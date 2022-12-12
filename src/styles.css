@@ -64,3 +64,11 @@ body {
 .input-group .rbt {
     flex: 1
 }
+
+.bg-edark {
+    background-color: #eee;
+}
+
+.text-vsmall {
+    font-size: 10px;
+}

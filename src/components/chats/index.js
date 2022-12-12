@@ -21,8 +21,8 @@ const getDimensions = () => {
 
 const orderUserIds = (uid1, uid2) => {
   // userId order is made by string comparison 
-  const { userId1, userId2 } = uid1 > uid2 ? 
-    { userId1: uid1, userId2: uid2 } : 
+  const { userId1, userId2 } = uid1 > uid2 ?
+    { userId1: uid1, userId2: uid2 } :
     { userId1: uid2, userId2: uid1 }
   return { userId1, userId2 }
 }
@@ -88,7 +88,7 @@ const Chats = () => {
     // if the user already has an existing conversation with the selected user
     if (hasExistingChat(selectedUser)) {
       // populate the chat with messages
-      dispatch(getAllMessagesInSingleChat({userId1, userId2}))
+      dispatch(getAllMessagesInSingleChat({ userId1, userId2 }))
       // create a new chat 
     } else {
       // create an empty chat
@@ -96,10 +96,10 @@ const Chats = () => {
         userId1,
         userId2,
         messages: {
-          id: uuid().slice(0,8),
+          id: uuid().slice(0, 8),
           from: loggedUserId,
           to: selectedUserId,
-          type : "STRING",
+          type: "STRING",
           message: "",
           sentOn: Date.now()
         }
@@ -110,7 +110,7 @@ const Chats = () => {
     SocketFactory.getConnection().emit("join_room", room)
     dispatch(joinRoom(room))
   }, [selectedUser, dispatch, hasExistingChat, user, isClicked])
-  
+
   // sets the selected user in state 
   const handleChange = (selectedUser) => {
     setSelectedUser(selectedUser)
@@ -140,10 +140,10 @@ const Chats = () => {
 
   const formatDate = (sentOn) => {
     const postedOn = new Date(sentOn);
-    const formattedDate = `${postedOn.getFullYear()}/${postedOn.getMonth()}/${postedOn.getDay()}`;
+    const formattedDate = `${postedOn.getFullYear()}/${postedOn.getMonth()}/${postedOn.getDate()}`;
     return formattedDate;
   }
-  
+
   // console.log("chats", chats)
   return (
     <div>
@@ -185,10 +185,26 @@ const Chats = () => {
                   <ul className="list-group">
                     {!!chats.length && chats.map((chat, index) => {
                       const otherUser = [chat?.userId1, chat?.userId2].filter(userObj => userObj.username !== user.username)[0]
+                      const lastChat = chat?.messages[chat?.messages.length - 1];
                       return (
-                        <li className="list-group-item chat-hover" key={`chatid-${index}`} onClick={() => {handleChange(otherUser); setIsClicked(!isClicked)}}>
-                          <p className="m-0"><b>{otherUser.username}</b><small className="text-muted"> - {formatDate(chat?.messages[0]?.sentOn)}</small></p>
-                          <p>{chat?.messages[0]?.message}</p>
+                        <li className="list-group-item chat-hover" key={`chatid-${index}`} onClick={() => { handleChange(otherUser); setIsClicked(!isClicked) }}>
+                          <p className="mb-2"><b>{otherUser.username}</b><small className="text-muted"> - {formatDate(lastChat?.sentOn)}</small></p>
+                          {lastChat?.type === 'IMAGE' && (
+                            <img src={lastChat.message} height="50" alt="sent image" />
+                          )}
+                          {lastChat?.type === 'VIDEO' && (
+                            <video
+                              src={lastChat?.message}
+                              width="100"
+                              height="70"
+                              controls
+                            >
+                              Your browser does not support the video tag.
+                            </video>
+                          )}
+                          {lastChat?.type === 'STRING' && (
+                            <p>{lastChat?.message}</p>
+                          )}
                         </li>
                       )
                     })}
