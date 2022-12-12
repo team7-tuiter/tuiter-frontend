@@ -1,6 +1,6 @@
 import io from "socket.io-client"
 import { getIdToken } from "./services/auth-service";
-
+const BASE_URL = process.env.BASE_URL
 let socketConnection;
 
 /**
@@ -12,7 +12,7 @@ let socketConnection;
  */
 const getSocket = async () => {
   const token = await getIdToken();
-  return io.connect('http://localhost:4000', {
+  return io.connect(BASE_URL, {
     query: { token }
   });
 }
