@@ -4,7 +4,7 @@
 import { useEffect, useRef, useState, useCallback } from "react"
 import React from 'react'
 import { getAllMessagesInSingleChat } from "../../redux/messageSlice"
-import { getLastMessagesFromAllChats } from "../../redux/chatSlice"
+import { getLastMessagesFromAllChats, deleteSingleChat } from "../../redux/chatSlice"
 import { createChat } from "../../redux/chatSlice"
 import { useSelector, useDispatch } from 'react-redux'
 import SocketFactory from '../../socket'
@@ -41,7 +41,7 @@ const Chats = () => {
   const messages = useSelector((state) => state.messages.messages)
   const [isClicked, setIsClicked] = useState(false)
   const [time, setTime] = useState(Date.now());
-
+  
 
   const updateDimens = () => {
     let dimensions = getDimensions();
@@ -205,6 +205,13 @@ const Chats = () => {
                           {lastChat?.type === 'STRING' && (
                             <p>{lastChat?.message}</p>
                           )}
+                          <button onClick={(e) => {
+                            e.stopPropagation()
+                            e.preventDefault()
+                            dispatch(deleteSingleChat({userId1: chat?.userId1?._id, userId2: chat?.userId2?._id}))
+                          }} className="btn btn-danger fa-pull-right">
+                            <i className="fas fa-remove"></i>
+                          </button>
                         </li>
                       )
                     })}
