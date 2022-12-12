@@ -140,7 +140,7 @@ const Chats = () => {
 
   const formatDate = (sentOn) => {
     const postedOn = new Date(sentOn);
-    const formattedDate = `${postedOn.getFullYear()}/${postedOn.getMonth()}/${postedOn.getDay()}`;
+    const formattedDate = `${postedOn.getFullYear()}/${postedOn.getMonth()}/${postedOn.getDate()}`;
     return formattedDate;
   }
 

@@ -1,0 +1,15 @@
+div.ms-wrap {
+  display: table;
+  width: 100%;
+}
+
+div.ms-cell {
+  display: table-cell;
+  vertical-align: bottom;
+  padding: 5px;
+}
+
+div.ms-cell span {
+  display: inline-block;
+  padding: 10px;
+}
