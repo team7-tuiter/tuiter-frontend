@@ -107,7 +107,6 @@ const Messages = () => {
           if (i === 0) return;
           const isMe = message.from === user._id;
           const alignment = isMe ? 'text-start' : 'text-end';
-          console.log(message);
           return (
             <div key={`chats-${i}`} className="ms-wrap">
               <div className={`ms-cell ${alignment}`}>
