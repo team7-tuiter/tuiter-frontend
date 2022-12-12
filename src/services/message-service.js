@@ -3,8 +3,8 @@
  */
 import axios from "axios"
 import SocketFactory from '../socket'
-const BASE_URL = process.env.BASE_URL
-const USERS_API = `${BASE_URL}/users`
+const REACT_APP_BASE_URL = process.env.REACT_APP_BASE_URL
+const USERS_API = `${REACT_APP_BASE_URL}/users`
 
 /** 
  * Sends message from one user to another 

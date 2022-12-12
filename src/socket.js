@@ -1,8 +1,7 @@
 import io from "socket.io-client"
 import { getIdToken } from "./services/auth-service";
-const BASE_URL = process.env.BASE_URL
+const REACT_APP_BASE_URL = process.env.REACT_APP_BASE_URL
 let socketConnection;
-
 /**
  * Creates a socket connection using firebase auth token.
  * Sends the token to the server for the auth hanshake.
@@ -12,7 +11,7 @@ let socketConnection;
  */
 const getSocket = async () => {
   const token = await getIdToken();
-  return io.connect(BASE_URL, {
+  return io.connect(REACT_APP_BASE_URL, {
     query: { token }
   });
 }

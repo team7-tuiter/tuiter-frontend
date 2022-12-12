@@ -1,8 +1,8 @@
 import axios from "axios";
-const BASE_URL = process.env.BASE_URL
+const REACT_APP_BASE_URL = process.env.REACT_APP_BASE_URL
 
-const LOGIN_API = `${BASE_URL}/login`;
-const USERS_API = `${BASE_URL}/users`;
+const LOGIN_API = `${REACT_APP_BASE_URL}/login`;
+const USERS_API = `${REACT_APP_BASE_URL}/users`;
 
 export const createUser = (user) =>
   axios.post(`${USERS_API}`, user)
