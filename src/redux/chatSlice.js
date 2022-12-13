@@ -1,11 +1,13 @@
 /**
  * @file implements chatSlice
  */
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
+import { createSlice, createAsyncThunk, current } from '@reduxjs/toolkit'
+import { connectStorageEmulator } from 'firebase/storage'
 import {
   apiGetAllChatsById,
   apiDeleteSingleChat,
-  apiCreateChat
+  apiCreateChat,
+  apiGetAllMessagesFromAllChats
 } from '../services/chat-service'
 
 
@@ -41,10 +43,10 @@ export const getAllChatsById = createAsyncThunk(
 export const deleteSingleChat = createAsyncThunk(
   'chats/deleteSingleChat', 
   async (payload, { rejectWithValue }) => {
-    const { from, to } = payload
+    const { userId1, userId2 } = payload
     try {
-      const response = await apiDeleteSingleChat(from, to)
-      return response
+      await apiDeleteSingleChat(userId1, userId2)
+      return payload
     } catch(e) {
       if (!e.response) throw e
       return rejectWithValue(e.response.data)
@@ -67,6 +69,23 @@ async (payload, { rejectWithValue }) => {
     return rejectWithValue(e.response.data)
   }
 })
+
+/**
+ * Async thunc calls the service function apiGetAllMessagesFromAllChats 
+ * @param payload contains the user id  
+ * @returns array of message objects
+ */
+export const getLastMessagesFromAllChats = createAsyncThunk(
+  'chats/getLastMessagesFromAllChats', 
+  async (payload, { rejectWithValue }) => {
+    try {
+      const response = await apiGetAllMessagesFromAllChats(payload)
+      return response
+    } catch(e) {
+      if (!e.response) throw e
+      return rejectWithValue(e.response.data)
+    }
+  })
 
 /**
  * Chat slice with reducers. 
@@ -95,7 +114,7 @@ export const chatSlice = createSlice({
       state.status = 'succeded'
       state.chats = state.chats.filter(
         (chat) => {
-          return chat.from !== action.payload.from && chat.to !== action.payload.to
+          return chat.userId1?._id !== action.payload?.userId1 && chat.userId2?._id !== action.payload?.userId2
         })
     },
     [deleteSingleChat.rejected] : (state, action) => {
@@ -108,9 +127,21 @@ export const chatSlice = createSlice({
     },
     [createChat.fulfilled] : (state, action) => {
       state.status = 'succeded'
-      state.chats.push(action.payload)
+      if (action.payload) state.chats.push(action.payload)
     },
     [createChat.rejected] : (state, action) => {
+      state.status = 'failed'
+      state.error = action.error.message
+    },
+    // getLastMessagesFromAllChats
+    [getLastMessagesFromAllChats.pending] : (state, action) => {
+      state.status = 'loading'
+    },
+    [getLastMessagesFromAllChats.fulfilled] : (state, action) => {
+      state.status = 'succeded'
+      state.chats = action.payload
+    },
+    [getLastMessagesFromAllChats.rejected] : (state, action) => {
       state.status = 'failed'
       state.error = action.error.message
     },

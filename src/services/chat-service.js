@@ -3,8 +3,8 @@
  */
 import axios from "axios"
 
-const BASE_URL = "http://localhost:4000"
-const USERS_API = `${BASE_URL}/users`
+const REACT_APP_BASE_URL = process.env.REACT_APP_BASE_URL
+const USERS_API = `${REACT_APP_BASE_URL}/users`
 
 /** 
  * Retrieves all chats involving a user
@@ -13,6 +13,15 @@ const USERS_API = `${BASE_URL}/users`
 */
 export const apiGetAllChatsById = (uid) =>
   axios.get(`${USERS_API}/${uid}/chats`)
+    .then(response => response.data)
+
+/**
+ * Get all last messages from all chats involving a user
+ * @param uid user id
+ * @returns response with array of messages
+ */
+export const apiGetAllMessagesFromAllChats = (uid) =>
+  axios.get(`${USERS_API}/${uid}/chats/last`)
     .then(response => response.data)
 
 /** 
@@ -25,21 +34,11 @@ export const apiDeleteSingleChat = (uid1, uid2) =>
   axios.delete(`${USERS_API}/${uid1}/users/${uid2}/chat`)
     .then(response => response.status)
 
-/** 
- * Retrieves a chat between two users
- * @param uid1 String user id 1
- * @param uid2 String user id 2
- * @returns response with the chat object
-*/
-export const apiGetSingleChat = (uid1, uid2) => 
-  axios.get(`${USERS_API}/${uid1}/users/${uid2}/chat`)
-    .then(response => response.data[0])
-
 /**
  * Creates new chat
  * @param chat Chat object with empty messages array
  * @returns chat object 
  */
 export const apiCreateChat = (chat) => 
-  axios.post(`${BASE_URL}/chat`, chat)
+  axios.post(`${REACT_APP_BASE_URL}/chat`, chat)
     .then(response => response.data)

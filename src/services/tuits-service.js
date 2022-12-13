@@ -1,7 +1,7 @@
 import axios from "axios";
-const BASE_URL = "http://localhost:4000"
-const TUITS_API = `${BASE_URL}/tuits`;
-const USERS_API = `${BASE_URL}/users`;
+const REACT_APP_BASE_URL = process.env.REACT_APP_BASE_URL
+const TUITS_API = `${REACT_APP_BASE_URL}/tuits`;
+const USERS_API = `${REACT_APP_BASE_URL}/users`;
 
 export const findAllTuits = () => 
   axios.get(TUITS_API)

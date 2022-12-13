@@ -1,8 +1,8 @@
 import axios from "axios";
-const BASE_URL = "http://localhost:4000";
+const REACT_APP_BASE_URL = process.env.REACT_APP_BASE_URL
 
-const LOGIN_API = `${BASE_URL}/login`;
-const USERS_API = `${BASE_URL}/users`;
+const LOGIN_API = `${REACT_APP_BASE_URL}/login`;
+const USERS_API = `${REACT_APP_BASE_URL}/users`;
 
 export const createUser = (user) =>
   axios.post(`${USERS_API}`, user)
@@ -27,6 +27,10 @@ export const deleteUsersByUsername = (username) =>
 
 export const findUserByCredentials = (credentials) =>
   axios.post(`${LOGIN_API}`, credentials)
+    .then(response => response.data);
+
+export const searchUser = (query) =>
+  axios.get(`${USERS_API}/search/${query}`)
     .then(response => response.data);
 
 const service = {

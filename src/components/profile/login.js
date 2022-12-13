@@ -1,30 +1,16 @@
-import { Link, useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
-import * as service from "../../services/users-service";
+import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 import { registerUsingUsername, signInUsingUsername } from '../../services/auth-service';
 import React from "react";
-import { UserList } from "./user-list";
-import { useSelector, useDispatch } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { signup, signin } from "../../redux/userSlice"
 import SocketFactory from "../../socket";
 
-
-
 export const Login = () => {
-  const [existingUsers, setExistingUsers] = useState([]);
+  const navigate = useNavigate();
   const [newUser, setNewUser] = useState({});
   const [loginUser, setLoginUser] = useState({});
-  const user = useSelector((state) => state.user.user)
   const dispatch = useDispatch()
-
-  const deleteUser = (uid) =>
-    service.deleteUser(uid)
-      .then(findAllUsers)
-  const findAllUsers = () =>
-    service.findAllUsers()
-      .then(users => {
-        setExistingUsers(users)
-      })
 
   /**
    * Registers the user in the firebase.
@@ -32,12 +18,13 @@ export const Login = () => {
   const register = async () => {
     try {
       let userCredential = await registerUsingUsername(newUser.username, newUser.password);
-      SocketFactory.init();
       const user = {
         _id: userCredential.uid,
         username: newUser.username
       }
-      dispatch(signup(user))
+      dispatch(signup(user));
+      await SocketFactory.init();
+      navigate("/home");
     } catch (e) {
       console.error(e);
       alert(e.message);
@@ -50,15 +37,14 @@ export const Login = () => {
   const signIn = async () => {
     try {
       const userCredential = await signInUsingUsername(loginUser.username, loginUser.password);
-      SocketFactory.init();
-      dispatch(signin(userCredential.uid))
+      dispatch(signin(userCredential.uid));
+      await SocketFactory.init();
+      navigate("/home");
     } catch (e) {
       console.error(e);
       alert(e.message);
     }
   }
-
-  useEffect(findAllUsers, []);
 
   return (
     <div>
@@ -84,11 +70,6 @@ export const Login = () => {
           setLoginUser({ ...loginUser, password: e.target.value })}
         placeholder="password" type="password" />
       <button onClick={signIn} className="btn btn-primary mb-5">Login</button>
-
-      <h1>Login As</h1>
-
-      <UserList users={existingUsers} deleteUser={deleteUser} />
-
     </div>
   );
 };

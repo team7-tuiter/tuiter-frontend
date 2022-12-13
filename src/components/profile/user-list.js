@@ -1,9 +1,13 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { signin } from '../../redux/userSlice'
-import { signInUsingUsername } from "../../services/auth-service";
+import { loginAs } from '../../redux/userSlice'
 
+/**
+ * Not in use.
+ * @returns User list.
+ * @deprecated
+ */
 export const UserList = ({ users, deleteUser }) => {
 
   const dispatch = useDispatch()
@@ -14,9 +18,8 @@ export const UserList = ({ users, deleteUser }) => {
         users &&
         users.map(user => {
           return (
-            <Link className="list-group-item"
+            <li className="list-group-item"
               key={user._id}
-              to={`/home/${user._id}`}
             >
               <span className="fs-3">
                 {user.username}
@@ -28,7 +31,7 @@ export const UserList = ({ users, deleteUser }) => {
               }} className="btn btn-danger fa-pull-right">
                 <i className="fas fa-remove"></i>
               </button>
-            </Link>
+            </li>
           )
         })
       }
