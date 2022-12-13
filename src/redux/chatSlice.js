@@ -1,7 +1,8 @@
 /**
  * @file implements chatSlice
  */
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
+import { createSlice, createAsyncThunk, current } from '@reduxjs/toolkit'
+import { connectStorageEmulator } from 'firebase/storage'
 import {
   apiGetAllChatsById,
   apiDeleteSingleChat,
@@ -42,10 +43,10 @@ export const getAllChatsById = createAsyncThunk(
 export const deleteSingleChat = createAsyncThunk(
   'chats/deleteSingleChat', 
   async (payload, { rejectWithValue }) => {
-    const { from, to } = payload
+    const { userId1, userId2 } = payload
     try {
-      const response = await apiDeleteSingleChat(from, to)
-      return response
+      await apiDeleteSingleChat(userId1, userId2)
+      return payload
     } catch(e) {
       if (!e.response) throw e
       return rejectWithValue(e.response.data)
@@ -113,7 +114,7 @@ export const chatSlice = createSlice({
       state.status = 'succeded'
       state.chats = state.chats.filter(
         (chat) => {
-          return chat.from !== action.payload.from && chat.to !== action.payload.to
+          return chat.userId1?._id !== action.payload?.userId1 && chat.userId2?._id !== action.payload?.userId2
         })
     },
     [deleteSingleChat.rejected] : (state, action) => {

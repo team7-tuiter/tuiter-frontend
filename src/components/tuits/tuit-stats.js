@@ -12,7 +12,7 @@ export default class TuitStats extends React.Component {
           {this.props.tuit.stats && this.props.tuit.stats.replies}
         </div>
         <div className="col">
-          <i className="far fa-retweet me-1"></i>
+          <i class="fa-solid fa-arrows-rotate"></i>
           {this.props.tuit.stats && this.props.tuit.stats.retuits}
         </div>
         <div className="col">
@@ -20,7 +20,7 @@ export default class TuitStats extends React.Component {
           {this.props.tuit.stats && this.props.tuit.stats.likes}
         </div>
         <div className="col">
-          <i className="far fa-inbox-out"></i>
+          <i class="fa-solid fa-upload"></i>
         </div>
       </div>
     );

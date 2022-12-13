@@ -3,8 +3,8 @@
  */
 import axios from "axios"
 
-const BASE_URL = "http://localhost:4000"
-const USERS_API = `${BASE_URL}/users`
+const REACT_APP_BASE_URL = process.env.REACT_APP_BASE_URL
+const USERS_API = `${REACT_APP_BASE_URL}/users`
 
 /** 
  * Retrieves all chats involving a user
@@ -40,5 +40,5 @@ export const apiDeleteSingleChat = (uid1, uid2) =>
  * @returns chat object 
  */
 export const apiCreateChat = (chat) => 
-  axios.post(`${BASE_URL}/chat`, chat)
+  axios.post(`${REACT_APP_BASE_URL}/chat`, chat)
     .then(response => response.data)
