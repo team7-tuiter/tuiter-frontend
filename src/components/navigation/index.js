@@ -13,7 +13,7 @@ function Navigation() {
     {label: 'Messages', icon: 'fa-envelope', path: '/messages'},
     {label: 'Bookmarks', icon: 'fa-bookmark', path: '/bookmarks'},
     {label: 'Lists', icon: 'fa-list', path: '/lists'},
-    {label: 'Profile', icon: 'fa-circle-ellipsis', path: '/profile'},
+    {label: 'Profile', icon: 'fa-users', path: '/profile'},
     {label: 'Login', icon: 'fa-user', path: '/login'},
     {label: 'Chats', icon: 'fa-comments', path: '/chats'}
   ];
